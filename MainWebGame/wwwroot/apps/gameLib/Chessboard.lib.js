@@ -39,7 +39,9 @@ function Chessboard() {
 			for (var n in m.next) pieces[n].className = 'prompt';
 		}
 		for (var i = 0; i < m.newRev.length; i++) pieces[m.newRev[i]].className += ' reversal';
-		if (m.newPos != -1) pieces[m.newPos].className += ' newest';
+		if (m.newPos != -1) {
+			pieces[m.newPos].className += ' newest';
+		}
 		piecesnum[0].innerHTML = m.black;
 		piecesnum[1].innerHTML = m.white;
 		side[m.side].className = 'cbox side';
