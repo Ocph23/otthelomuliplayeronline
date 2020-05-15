@@ -6,10 +6,8 @@ function AI(othe) {
 	var maxDepth;
 	var outTime;
 	let dataBoards = [ 8, 16, 24, 32, 40, 48, 56, 64 ];
-
-	var weight = [ 6, 11, 2, 2, 3 ];
-
-	var rnd = [
+    var weight = [ 6, 11, 2, 2, 3 ];
+    var rnd = [
 		{
 			s: 0,
 			a: 1,
