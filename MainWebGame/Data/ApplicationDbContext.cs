@@ -5,8 +5,5 @@ using Microsoft.EntityFrameworkCore;
 namespace MainWebGame.Data {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser> {
         public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options) : base (options) { }
-
-      
-
     }
 }
