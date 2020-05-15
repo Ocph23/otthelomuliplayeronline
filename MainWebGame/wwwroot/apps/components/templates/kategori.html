@@ -1,0 +1,26 @@
+<li class="nav-item dropdown connection">
+    <a class="nav-link text-primary" href="" id="navbarDropdown" role="button" data-toggle="dropdown"
+        data-target="#kategori" aria-haspopup="true" aria-expanded="false">
+        Kategori </a>
+    <ul id="kategori" class="dropdown-menu dropdown-menu-right connection-dropdown">
+        <li class="connection-list">
+            <div class="row">
+                <div class="col-12 kategoriItem" ng-repeat="item in kategories">
+                    <a href="" ng-click="Select(item)" class="text-left"><span
+                            class="font-16">{{kodefikasi.kategori(item.idkategori)}} -
+                            {{item.nama_kategori}}</span></a>
+                    <p class="text-muted">{{item.deskripsi}}</p>
+                    <hr />
+                </div>
+            </div>
+        </li>
+    </ul>
+</li>
+
+
+
+<style>
+    .kategoriItem {
+        margin-bottom: 5px;
+    }
+</style>

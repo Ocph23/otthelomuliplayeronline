@@ -1,0 +1,17 @@
+<div class="user">
+    <div class="user-avatar">
+        <div class="online-status"
+            ng-class="{'bg-online': $ctrl.player.isOnline, 'bg-offline': !$ctrl.player.isOnline}"></div>
+        <img src="images/images.jfif" alt="">
+
+    </div>
+    <div class="user-detail">
+        <div class="user-name">{{$ctrl.player.playerName}}</div>
+        <div class="user-win">Ranking : {{$ctrl.player.score.rank}}</div>
+        <div class="user-lost">Menang : {{$ctrl.player.score.win}} , Kalah :{{$ctrl.player.score.lost}} </div>
+    </div>
+    <div class="user-action">
+        <button ng-show="!$ctrl.player.playing" ng-click="play()">{{Title}}</button>
+        <label ng-show="$ctrl.player.playing">Main</label>
+    </div>
+</div>

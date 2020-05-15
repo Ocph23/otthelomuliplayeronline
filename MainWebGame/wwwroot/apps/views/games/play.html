@@ -1,0 +1,48 @@
+<div id="desk">
+    <div class="score-main" id="score">
+        <div class="score-item">
+            <div id="side1" class="cbox">
+                <span>0</span>
+                <div class="black"></div>
+            </div>
+            <label>{{side1}}</label>
+        </div>
+        <div class="score-item">
+            <div class="text-center">
+                <h1 id="time">60</h1>
+                <h6 class="text-center">Waktu</h6>
+            </div>
+        </div>
+        <div class="score-item">
+            <div id="side2" class="cbox">
+                <span>0</span>
+                <div class="white"></div>
+            </div>
+            <label>{{side2}}</label>
+        </div>
+    </div>
+    <div style="--aspect-ratio:1/1;">
+        <div id="chessboard"></div>
+    </div>
+    <div class="bottom-menu">
+        <button id="play" ng-click="menyerah()" class="button">Menyerah</button>
+        <!--div id="back" class="button">Retract</div-->
+        <button id="2d3d" class="button">3D</button>
+        <button id="ai" class="button" ng-click="AiPlay()">AI</button>
+        <!--div-- id="explain" class="button">About</!--div-->
+    </div>
+</div>
+
+
+<div id="selectbox">
+    <label><input type="radio" name="side" checked="checked"><span>Player first</span></label>
+    <label><input type="radio" name="side"><span>AI first</span></label><br />
+    <label><input type="radio" name="level"><span>Easy</span></label><br />
+    <label><input type="radio" name="level" checked="checked"><span>Medium</span></label><br />
+    <label><input type="radio" name="level"><span>Hard</span></label><br />
+    <label><input type="radio" name="level"><span>Very Hard</span></label><br />
+    <div id="buttons">
+        <div id="ok" class="button">OK</div>
+        <div id="cancel" class="button">Cancel</div>
+    </div>
+</div>

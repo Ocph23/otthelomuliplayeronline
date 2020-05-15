@@ -1,0 +1,135 @@
+<div class="col">
+    <div class="email-inbox-header">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="email-title"><span class="icon"><i
+                            class="fas fa-shopping-cart"></i></span>&nbsp;&nbsp;Keranjang Belanja</div>
+            </div>
+        </div>
+    </div>
+    <div class="email-filters" ng-if="source.length>0">
+        <div class="email-filters-left">
+            <label class="custom-control custom-checkbox be-select-all">
+                <input class="custom-control-input chk_all" type="checkbox" name="chk_all">
+                <span class="custom-control-label"></span>
+            </label>
+            <div class="btn-group mt-2 font-18">
+                Pilih Semua
+            </div>
+        </div>
+        <div class="email-filters-right"><span class="email-pagination-indicator text-primary font-20">Rp
+                {{total()|number}}</span>
+            <div class="btn-group email-pagination-nav">
+                <button ng-click="lanjut()" class="btn btn-success" type="button">Lanjut Ke Pembayaran</button>
+            </div>
+        </div>
+    </div>
+    <div class="email-list">
+        <div class="email-list-item email-list-item--unread" ng-repeat="item in source">
+            <div class="email-list-actions">
+                <label class="custom-control custom-checkbox">
+                    <input ng-model="item.checked" class="custom-control-input checkboxes" type="checkbox"
+                        id="one"><span class="custom-control-label"></span>
+                </label>
+            </div>
+            <div class="row align-items-center">
+                <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <div class="user-avatar float-xl-left pr-4 float-none">
+                        <img src="assets/images/avatar-1.jpg" alt="User Avatar" class="rounded user-avatar-xl">
+                    </div>
+                    <div class="pl-xl-3">
+                        <div class="m-b-0">
+                            <div class="user-avatar-name">
+                                <p class="text-dark font-18 m-b-10" title="Nama Toko">{{item.penjual.nama_toko}}</p>
+                            </div>
+                            <div class="user-avatar-name">
+                                <p class="text-muted font-16 m-b-10" title="Nama Toko">{{item.nama_barang}} </p>
+                            </div>
+                            <div class="user-avatar-name">
+                                <p class="text-muted font-16 m-b-10" title="Nama Toko">Rp. {{item.harga|number}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="float-right float-none mt-xl-0 mt-4 col-sm pl-0">
+                    <div class="quantity">
+                        <input ng-model="item.jumlah" type="number" min="1" max="99999" step="1" value="1">
+                    </div>
+                </div>
+                <div class="float-right float-none mt-xl-0 mt-6 col-sm pl-0">
+                    <h3 class="text-primary">Rp. {{hitung(item)|number}}</h3>
+                </div>
+                <div class="float-right float-none mt-xl-0 mt-2 col-sm pl-0">
+                    <button ng-click="delete(item)" class="btn btn-outline-dark btn-rounded"><i
+                            class="fas fa-trash-alt"></i> </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    jQuery(
+        '<div class="quantity-nav"><div ng-click="Up(item)" class="quantity-button quantity-up">+</div><div ng-click="Down(item)" class="quantity-button quantity-down">-</div></div>'
+    )
+        .insertAfter('.quantity input');
+    // jQuery('.quantity').each(function () {
+    //     var spinner = jQuery(this),
+    //         input = spinner.find('input[type="number"]'),
+    //         btnUp = spinner.find('.quantity-up'),
+    //         btnDown = spinner.find('.quantity-down'),
+    //         min = input.attr('min'),
+    //         max = input.attr('max');
+
+    //     btnUp.click(function () {
+    //         var oldValue = parseFloat(input.val());
+    //         if (oldValue >= max) {
+    //             var newVal = oldValue;
+    //         } else {
+    //             var newVal = oldValue + 1;
+    //         }
+    //         spinner.find("input").val(newVal);
+    //         spinner.find("input").trigger("change");
+    //     });
+
+    //     btnDown.click(function () {
+    //         var oldValue = parseFloat(input.val());
+    //         if (oldValue <= min) {
+    //             var newVal = oldValue;
+    //         } else {
+    //             var newVal = oldValue - 1;
+    //         }
+    //         spinner.find("input").val(newVal);
+    //         spinner.find("input").trigger("change");
+    //     });
+
+    // });
+</script>
+<script>
+    $(document).ready(function () {
+
+        // binding the check all box to onClick event
+        $(".chk_all").click(function () {
+
+            var checkAll = $(".chk_all").prop('checked');
+            if (checkAll) {
+                $(".checkboxes").prop("checked", true);
+            } else {
+                $(".checkboxes").prop("checked", false);
+            }
+
+        });
+
+        // if all checkboxes are selected, then checked the main checkbox class and vise versa
+        $(".checkboxes").click(function () {
+
+            if ($(".checkboxes").length == $(".subscheked:checked").length) {
+                $(".chk_all").attr("checked", "checked");
+            } else {
+                $(".chk_all").removeAttr("checked");
+            }
+
+        });
+
+    });
+</script>

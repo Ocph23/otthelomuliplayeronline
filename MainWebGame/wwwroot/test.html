@@ -1,0 +1,67 @@
+@page
+@model MainWebGame.Pages.Game.indexModel
+@{
+ViewData["Title"] = "index";
+}
+<div id="desk">
+    <div class="score-main">
+        <div class="score-item">
+            <div id="side1" class="cbox">
+                <div class="black"></div>
+                <span>0</span>
+            </div>
+        </div>
+        <div class="score-item">
+            <div class="text-center">
+                <h1 id="time">60</h1>
+            </div>
+        </div>
+        <div class="score-item">
+            <div id="side2" class="cbox">
+                <span>0</span>
+                <div class="white"></div>
+            </div>
+
+        </div>
+    </div>
+    <div id="chessboard"></div>
+</div>
+<div class="row col-md-12">
+    <div class="col-md-2">
+        <div id="left">
+            <h4 class="text-center">Waktu</h4>
+
+
+        </div>
+    </div>
+    <div class="col-md-7">
+
+    </div>
+    <div class="col-md-3">
+        <div id="right">
+
+            <button id="play" class="button">Start</button>
+            <!--div id="back" class="button">Retract</div-->
+            <button id="2d3d" class="button">3D</button>
+            <!--div-- id="explain" class="button">About</!--div-->
+        </div>
+
+    </div>
+
+
+    <div id="selectbox">
+        <label><input type="radio" name="side" checked="checked"><span>Player first</span></label>
+        <label><input type="radio" name="side"><span>AI first</span></label><br />
+        <label><input type="radio" name="level"><span>Easy</span></label><br />
+        <label><input type="radio" name="level" checked="checked"><span>Medium</span></label><br />
+        <label><input type="radio" name="level"><span>Hard</span></label><br />
+        <label><input type="radio" name="level"><span>Very Hard</span></label><br />
+        <div id="buttons">
+            <div id="ok" class="button">OK</div>
+            <div id="cancel" class="button">Cancel</div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/Othello.js" asp-append-version="true"></script>

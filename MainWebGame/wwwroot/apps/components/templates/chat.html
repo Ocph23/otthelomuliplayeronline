@@ -1,0 +1,52 @@
+<div class="chat">
+    <div class="row" ng-repeat="channel in channels" ng-show="channel.isOpened">
+        <div class="card direct-chat direct-chat-warning">
+            <div class="card-header">
+
+                <button type="button" ng-click="channel.isOpened=!channel.isOpened" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="card-title">Direct Chat</h3>
+            </div>
+            <div class="card-body">
+                <div class="direct-chat-messages">
+                    <div class="direct-chat-msg" ng-class="{right: item.idpengirim==2}"
+                        ng-repeat="item in channel.chats">
+                        <div class="direct-chat-infos clearfix">
+                            <span class="direct-chat-name float-left">{{item.pengirim}}</span>
+                            <span
+                                class="direct-chat-timestamp float-right">{{item.tgl_pesan| date:'dd MMM hh:mm'}}</span>
+                        </div>
+                        <!-- /.direct-chat-infos -->
+                        <img class="direct-chat-img" src="assets/images/avatar-1.jpg"
+                            ng-src="images/avatar/{{item.avatar}}" alt="message user image">
+                        <!-- /.direct-chat-img -->
+                        <div class="direct-chat-text">
+                            {{item.isi_pesan}}
+                        </div>
+                        <!-- /.direct-chat-text -->
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-footer">
+                <form action="#" method="post">
+                    <div class="input-group">
+                        <input type="text" ng-model="message" name="message" placeholder="Type Message ..."
+                            class="form-control">
+                        <span class="input-group-append">
+                            <button ng-click="send(channel,message)" type="button" class="btn btn-warning">Send</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!--div-- ng-show="!isOpened" class="buttonStart">
+        <button class="btn btn-warning text-right" ng-click="isOpened=!isOpened">Chating</button>
+    </!--div-->
+
+
+</div>

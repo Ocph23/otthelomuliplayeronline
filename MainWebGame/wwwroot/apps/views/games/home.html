@@ -1,0 +1,23 @@
+<h4>Profile</h4>
+<hr />
+<div class="user">
+    <div class="user-avatar">
+        <img src="images/images.jfif" alt="">
+    </div>
+    <div class="user-detail">
+        <div class="user-name">{{playerService.MyAccount.playerName}}</div>
+        <div class="user-win">Rangking :{{playerService.MyAccount.score.rank}} </div>
+        <div class="user-lost">Menang : {{playerService.MyAccount.score.win}} , Kalah
+            :{{playerService.MyAccount.score.lost}} </div>
+    </div>
+    <div class="user-action">
+        <button ng-click="playVsComputer()">Bermain</button>
+    </div>
+</div>
+<hr />
+
+<h4>Players Online</h4>
+<hr />
+<div ng-repeat="player in playerService.players ">
+    <useronline player="player"></useronline>
+</div>

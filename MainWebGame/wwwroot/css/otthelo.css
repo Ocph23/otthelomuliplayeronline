@@ -1,0 +1,149 @@
+#left {
+  display: inline-block;
+}
+
+div.inline {
+  float: left;
+}
+
+.clearBoth {
+  clear: both;
+}
+
+.button {
+  margin: 3px;
+  width: 100px;
+  font-size: 15px;
+  line-height: 25px;
+  color: #ffffff;
+  background: #2cd6ec;
+  border: 1px solid #729da3;
+  border-radius: 25px;
+  -webkit-box-shadow: 0px 2px 4px #76898b;
+          box-shadow: 0px 2px 4px #76898b;
+  text-align: center;
+  cursor: default;
+}
+
+.button:hover {
+  background: #2cd6ec;
+  border: 1px solid #2cd6ec;
+  -webkit-box-shadow: 0px 2px 4px #2cd6ec;
+          box-shadow: 0px 2px 4px #2cd6ec;
+}
+
+.button:active {
+  color: #600;
+  background: #eec7a6;
+  border: 1px solid #ff0000;
+  -webkit-box-shadow: 0px 2px 5px #482915;
+          box-shadow: 0px 2px 5px #482915;
+  position: relative;
+  top: 2px;
+}
+
+.opponent {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.black,
+.white {
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  display: block;
+  margin: auto;
+  vertical-align: middle;
+  -webkit-box-shadow: 0px 4px 10px #482915;
+          box-shadow: 0px 4px 10px #482915;
+}
+
+.fdd #chessboard {
+  margin-top: -50px;
+  -webkit-transform: perspective(740px) rotateX(40deg);
+          transform: perspective(740px) rotateX(40deg);
+}
+
+.fdd td .black,
+.fdd td .white {
+  margin: 0px 5px 10px 5px;
+  -webkit-box-shadow: 0px 8px 10px #482915;
+          box-shadow: 0px 8px 10px #482915;
+}
+
+.black {
+  background: #65d127;
+  -webkit-transform: rotateY(0deg);
+          transform: rotateY(0deg);
+}
+
+.white {
+  background: white;
+  -webkit-transform: rotateY(180deg);
+          transform: rotateY(180deg);
+}
+
+.reversal {
+  -webkit-transition: background 0.3s, -webkit-transform 0.3s;
+  transition: background 0.3s, -webkit-transform 0.3s;
+  transition: transform 0.3s, background 0.3s;
+  transition: transform 0.3s, background 0.3s, -webkit-transform 0.3s;
+}
+
+.newest:before,
+.reversal:before {
+  content: "";
+  display: block;
+  width: 20%;
+  height: 20%;
+  border-radius: 50%;
+}
+
+.newest:before {
+  background: #f00;
+}
+
+.reversal:before {
+  background: #66c;
+}
+
+#selectbox {
+  position: absolute;
+  left: 285px;
+  top: 76px;
+  width: 320px;
+  height: 330px;
+  background: #dba977;
+  border: 5px solid #98472c;
+  border-radius: 50px;
+  -webkit-box-shadow: 0px 5px 15px #482915;
+          box-shadow: 0px 5px 15px #482915;
+  padding: 0px 30px;
+  color: #472e25;
+  font-size: 28px;
+  line-height: 45px;
+  display: none;
+}
+
+#selectbox input:checked + span {
+  color: #990000;
+}
+
+#buttons {
+  margin: 0px 30px;
+}
+
+#buttons div {
+  float: left;
+  margin: 0px 10px;
+}
+
+#copyright {
+  clear: left;
+  text-align: center;
+  color: #642100;
+  padding-top: 15px;
+  font-size: 18px;
+}
+/*# sourceMappingURL=otthelo.css.map */
