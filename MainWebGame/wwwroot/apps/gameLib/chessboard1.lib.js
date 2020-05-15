@@ -36,7 +36,7 @@ function Chessboard() {
 	chessBoard.update = function(m, nop) {
 		for (var i = 0; i < 64; i++) pieces[i].className = [ 'white', '', 'black' ][m[i] + 1];
 		if (nop) {
-			for (var n in m.next) pieces[n].className = 'prompt';
+            for (var n in m.next) { pieces[n].className = 'prompt'; }
 		}
 		for (var i = 0; i < m.newRev.length; i++) pieces[m.newRev[i]].className += ' reversal';
 		if (m.newPos != -1) {
