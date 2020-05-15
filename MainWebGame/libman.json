@@ -1,16 +1,70 @@
 {
-  "version": "1.0",
-  "defaultProvider": "unpkg",
+	"version": "1.0",
+	"defaultProvider": "unpkg",
   "libraries": [
     {
       "library": "@microsoft/signalr@3.1.2",
-      "destination": "wwwroot/lib/@microsoft/signalr/",
+      "destination": "wwwroot/lib/microsoft/signalr/",
       "files": [
         "dist/browser/signalr.js",
         "dist/browser/signalr.js.map",
         "dist/browser/signalr.min.js",
         "dist/browser/signalr.min.js.map"
       ]
+    },
+    {
+      "library": "angular@1.7.9",
+      "destination": "wwwroot/lib/angular/"
+    },
+    {
+      "library": "@uirouter/angularjs@1.0.26",
+      "destination": "wwwroot/lib/uirouter",
+      "files": [
+        "release/angular-ui-router.js",
+        "release/angular-ui-router.js.map",
+        "release/angular-ui-router.min.js",
+        "release/angular-ui-router.min.js.map",
+        "release/resolveService.js",
+        "release/resolveService.js.map",
+        "release/resolveService.min.js",
+        "release/resolveService.min.js.map",
+        "release/stateEvents.js",
+        "release/stateEvents.js.map",
+        "release/stateEvents.min.js",
+        "release/stateEvents.min.js.map",
+        "release/ui-router-angularjs.js",
+        "release/ui-router-angularjs.js.map",
+        "release/ui-router-angularjs.min.js",
+        "release/ui-router-angularjs.min.js.map"
+      ]
     }
+  ,
+{
+  "library": "angular-local-storage@0.7.1",
+  "destination": "wwwroot/lib/angular-local-storage/",
+  "files": [
+    "dist/angular-local-storage.js",
+    "dist/angular-local-storage.min.js",
+    "dist/angular-local-storage.min.js.map"
   ]
+}
+,
+{
+  "library": "swangular@1.4.3",
+  "destination": "wwwroot/lib/swangular/"
+}
+,
+{
+  "library": "sweetalert2@9.10.13",
+  "destination": "wwwroot/lib/sweetalert2/",
+  "files": [
+    "dist/sweetalert2.all.js",
+    "dist/sweetalert2.all.min.js",
+    "dist/sweetalert2.css",
+    "dist/sweetalert2.js",
+    "dist/sweetalert2.min.css",
+    "dist/sweetalert2.min.js"
+  ]
+}
+]
 }

@@ -25,6 +25,8 @@ namespace MainWebGame {
             services.AddDbContext<ScoreModelContext>(options =>
                  options.UseMySql(
                      Configuration.GetConnectionString("DefaultConnection")));
+
+
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddSignalR ();
