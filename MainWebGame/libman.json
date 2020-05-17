@@ -30,7 +30,7 @@
 			"destination": "wwwroot/lib/swangular/"
 		},
 		{
-			"library": "sweetalert2@9.10.13",
+			"library": "sweetalert2@7.1.3",
 			"destination": "wwwroot/lib/sweetalert2/",
 			"files": [
 				"dist/sweetalert2.all.js",
