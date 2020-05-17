@@ -1,13 +1,13 @@
 function AI(othe) {
 	var oo = this;
 	oo.calculateTime = 1000;
-	oo.outcomeDepth = 3;
+	oo.outcomeDepth = 2;
 	var outcomeCoarse = 15;
 	var maxDepth;
 	var outTime;
 	let dataBoards = [ 8, 16, 24, 32, 40, 48, 56, 64 ];
-    var weight = [ 6, 11, 2, 2, 3 ];
-    var rnd = [
+	var weight = [ 6, 11, 2, 2, 3 ];
+	var rnd = [
 		{
 			s: 0,
 			a: 1,
@@ -127,6 +127,8 @@ function AI(othe) {
 	}
 
 	function evaluation(m) {
+		console.log('Evaluate Map For ' + (m.side == 1 ? ' O ' : ' X '));
+		oo.printMap(m);
 		var corner = 0,
 			steady = 0,
 			uk = {};
@@ -160,26 +162,33 @@ function AI(othe) {
 		}
 
 		var frontier = 0;
+		var frontierX = 0;
+		var frontierO = 0;
 		for (var i = 9; i <= 54; i += (i & 7) == 6 ? 3 : 1) {
 			if (m[i] == 0) continue;
 			for (var j = 0; j < 8; j++)
 				if (m[othe.dire(i, j)] == 0) {
+					if (m[i] == 1) {
+						frontierX += 1;
+					} else {
+						frontierO += 1;
+					}
 					frontier -= m[i];
 					break;
 				}
 		}
 
-		// var mobility = (m.nextNum - m.prevNum) * m.side;
+		var mobility = m.nextNum;
+		var rv = corner + (m.side == 1 ? m.nextNum : m.prevNum) + mobility;
 
-		// var parity = m.space < 18 ? (m.space % 2 == 0 ? -m.side : m.side) : 0;
+		console.log('Frontier X =' + frontierX);
+		console.log('Frontier O =' + frontierO);
+		console.log('Corner  =' + corner);
+		console.log('Mobility  X =' + m.nextNum);
+		console.log('Mobility  O =' + m.prevNum);
+		//oo.printMap(m);
+		console.log('____________________________\r\n');
 
-		// var rv =
-		// 	corner * weight[0] + steady * weight[1] + frontier * weight[2] + mobility * weight[3] + parity * weight[4];
-		var mobility = (m.nextNum - m.prevNum) * m.side;
-		var rv = corner + frontier + mobility;
-		console.log('Evaluate Map For ' + (m.side == 1 ? ' O ' : ' X ' + 'Move   RV : ') + rv * m.side);
-		oo.printMap(m);
-		console.log('---------------------------------\r\n\r\n');
 		return rv * m.side;
 	}
 

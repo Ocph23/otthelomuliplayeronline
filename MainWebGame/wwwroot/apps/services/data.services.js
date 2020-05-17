@@ -102,8 +102,6 @@ function GameService($http, PlayerService, $state, $q) {
 		// for (var i = 2; i < ro.length; i++) {
 		// 	if (ro[i].checked) break;
 		// }
-		ai.calculateTime = [ 20, 100, 500, 2000, 5000, 10000, 20000 ][i - 2];
-		ai.outcomeDepth = [ 3, 6, 9, 12, 15, 18, 21 ][i - 2];
 
 		// othe.connection.invoke('SearchOpponent').catch(function(err) {
 		// 	console.error(err.toString());
@@ -138,8 +136,9 @@ function GameService($http, PlayerService, $state, $q) {
 		} else {
 			othe.mePlay = true;
 		}
-		othe.ai.calculateTime = [ 20, 100, 500, 2000, 5000, 10000, 20000 ][params.level];
-		othe.ai.outcomeDepth = [ 3, 5, 10, 16, 17 ][params.level];
+
+		othe.ai.calculateTime = [ 20, 100, 500, 2000, 5000, 10000, 20000 ][params.level - 1];
+		othe.ai.outcomeDepth = [ 2, 3, 4, 5, 6, 7, 8 ][params.level - 1];
 		othe.play();
 
 		document.getElementById('2d3d').onclick = function() {

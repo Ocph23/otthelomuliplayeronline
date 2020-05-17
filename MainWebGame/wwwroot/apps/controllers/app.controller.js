@@ -4,7 +4,7 @@ angular
 	.controller('gameVsComputerController', gameVsComputerController)
 	.controller('gamePlayController', gamePlayController);
 
-function gameHomeController($scope, PlayerService, $state) {
+function gameHomeController($scope, PlayerService, $state, message) {
 	var userId = PlayerService.getMyUserId();
 	$scope.playerService = PlayerService;
 
@@ -65,6 +65,10 @@ function gameHomeController($scope, PlayerService, $state) {
 	$scope.playVsComputer = () => {
 		$state.go('game-vs-ai', { roles: { pion: 1, deep: 2 } });
 	};
+
+	$scope. fireMessage=()=>{
+		message.dialog("Test").then(x=>{})
+	}
 }
 
 function gamePlayController($scope, GameService, $state, $stateParams) {
