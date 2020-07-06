@@ -1,0 +1,27 @@
+<div class="admin-title">
+    <h3>Data Tantangan</h3>
+    <hr />
+</div>
+
+<div class="admin-peraturan">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Waktu Main</th>
+                <th scope="col">Pemain 1</th>
+                <th scope="col">Pemain 2</th>
+                <th scope="col">Pemenang</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in datas">
+                <td scope="row">{{$index+1}}</td>
+                <td>{{item.tanggal | date:'dd-MM-yyyy HH:ss'}}</td>
+                <td>{{item.user1}} ({{item.userScore}})</td>
+                <td>{{item.user2}} ({{item.lawanScore}})</td>
+                <td>{{item.winner}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

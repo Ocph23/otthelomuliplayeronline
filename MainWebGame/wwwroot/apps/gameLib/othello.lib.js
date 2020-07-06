@@ -11,6 +11,10 @@ function Othello() {
 
 	othello.aiSide = 0;
 
+	othello.getHistory = function() {
+		return history;
+	};
+
 	othello.play = function() {
 		if (aiRuning) return;
 		console.clear();
@@ -42,6 +46,7 @@ function Othello() {
 		var aiAuto = othello.aiSide == map.side || othello.aiSide == 2;
 		othello.findLocation(map);
 		othello.board.update(map, !aiAuto);
+		history.push(map);
 		// console.log(map.nextIndex)
 
 		if (map.space == 0 || (map.nextNum == 0 && map.prevNum == 0)) {
@@ -80,13 +85,22 @@ function Othello() {
 	}
 
 	function gameOver() {
+		var playerSide1 = document.getElementById('playerSide1');
+		var playerSide2 = document.getElementById('playerSide2');
+
 		alert(
-			'End!\n\nBlack: ' +
+			'Selesai !\n  ' +
+				playerSide1.innerHTML +
+				' : ' +
 				map.black +
-				' \nWhite: ' +
+				'\n' +
+				playerSide2.innerHTML +
+				' : ' +
 				map.white +
-				' \n\n' +
-				(map.black == map.white ? 'Draw!' : map.black > map.white ? 'Black win!' : 'White win!')
+				' \n' +
+				(map.black == map.white
+					? 'Draw!'
+					: map.black > map.white ? playerSide1.innerHTML + ' Menang!' : playerSide2.innerHTML + ' Menang!')
 		);
 	}
 
@@ -167,7 +181,7 @@ function Othello() {
 	};
 
 	othello.goChess = function(n) {
-		history.push(map);
+		//history.push(map);
 		//othello.connection.invoke('Play', n);
 		//othello.mePlay = !othello.mePlay;
 		console.log('Player Play :');
@@ -182,6 +196,7 @@ function Othello() {
 		map = othello.newMap(map, n);
 		map.newRev = rev;
 		map.newPos = n;
+		//history.push(map);
 		// console.log(map.key);
 		update();
 		othello.ai.printMap(map);
@@ -316,13 +331,22 @@ function OthelloOnline(signalConnection) {
 
 	function gameOver() {
 		othello.connection.invoke('GameOver', othello.game);
+		var playerSide1 = document.getElementById('playerSide1');
+		var playerSide2 = document.getElementById('playerSide2');
+
 		alert(
-			'End!\n\nBlack: ' +
+			'Selesai !\n  ' +
+				playerSide1.innerHTML +
+				' : ' +
 				map.black +
-				' \nWhite: ' +
+				'\n' +
+				playerSide2.innerHTML +
+				' : ' +
 				map.white +
-				' \n\n' +
-				(map.black == map.white ? 'Draw!' : map.black > map.white ? 'Black win!' : 'White win!')
+				' \n' +
+				(map.black == map.white
+					? 'Draw!'
+					: map.black > map.white ? playerSide1.innerHTML + ' Menang!' : playerSide2.innerHTML + ' Menang!')
 		);
 	}
 

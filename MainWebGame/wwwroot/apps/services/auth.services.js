@@ -1,7 +1,7 @@
 angular.module('auth.service', []).factory('AuthService', AuthService);
 
 function AuthService($http, $q, StorageService, $state, helperServices, message) {
-	var controller = '/api/users';
+	var controller = '/api/user';
 	var service = {};
 
 	return {

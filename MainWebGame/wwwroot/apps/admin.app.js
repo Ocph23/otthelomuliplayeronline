@@ -1,5 +1,5 @@
 angular
-	.module('app', [ 'swangular', 'app.router', 'app.component', 'app.controller', 'app.service' ])
+	.module('admin', [ 'swangular', 'admin.router', 'app.component', 'admin.controller', 'app.service' ])
 	.config(() => {
 		//or as a Number prototype method:
 		Number.prototype.padLeft = function(n, str) {
@@ -7,11 +7,11 @@ angular
 		};
 	})
 	.controller('homeController', homeController)
-	.directive('chooseFile', function($http, helperServices, AuthService) {
+	.directive('chooseFile', function() {
 		return {
 			link: function(scope, elem, attrs) {
 				var button = elem.find('img');
-				var input = angular.element(elem[0].querySelector('input#file'));
+				var input = angular.element(elem[0].querySelector('input#fileInput'));
 				button.bind('click', function() {
 					input[0].click();
 				});
@@ -32,8 +32,8 @@ angular
 										var ctx = canvas.getContext('2d');
 										ctx.drawImage(img, 0, 0);
 
-										var MAX_WIDTH = 35;
-										var MAX_HEIGHT = 35;
+										var MAX_WIDTH = 200;
+										var MAX_HEIGHT = 200;
 										var width = img.width;
 										var height = img.height;
 
@@ -62,27 +62,8 @@ angular
 										//Converting Binary Data to base 64
 										var base64String = window.btoa(raw);
 										var model = input[0].attributes[1];
-										//Reflect.defineProperty(scope.model, model.value, base64String);
-										//scope.photos = base64String;
-										setTimeout(() => {
-											scope.$apply(function() {
-												scope.photos = base64String;
-												$http({
-													method: 'post',
-													url: helperServices.url + '/api/user/photo',
-													headers: AuthService.getHeader(),
-													data: { id: scope.userId, photo: base64String }
-												}).then(
-													(res) => {
-														def.resolve(res.data);
-													},
-													(err) => {
-														message.error(err);
-														def.reject();
-													}
-												);
-											});
-										}, 200);
+										Reflect.defineProperty(scope.model, model.value, base64String);
+										scope.model.GambarData = base64String;
 									}, 200);
 								};
 							})(f);

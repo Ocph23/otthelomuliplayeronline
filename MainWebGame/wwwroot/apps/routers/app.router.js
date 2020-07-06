@@ -11,6 +11,12 @@ angular.module('app.router', [ 'ui.router', 'account.router' ]).config(function(
 			controller: 'gameHomeController',
 			templateUrl: './apps/views/games/home.html'
 		})
+		.state('game-peringkat', {
+			url: '/peringkat',
+			parent: 'game',
+			controller: 'peringkatController',
+			templateUrl: './apps/views/games/peringkat.html'
+		})
 		.state('game-vs-ai', {
 			url: '/vscomputer',
 			parent: 'game',

@@ -1,0 +1,25 @@
+<div class="admin-title">
+    <h3>Data Pemain</h3>
+    <hr />
+</div>
+
+<div class="admin-pemain">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nama Pemain</th>
+                <th scope="col">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in datas">
+                <td scope="row">{{$index+1}}</td>
+                <td>{{item.playerName}}</td>
+                <td>
+                    <button class="btn btn-danger" ng-click="delete(item)">Hapus</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

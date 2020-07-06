@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using MainWebGame.Data;
@@ -17,7 +18,6 @@ namespace MainWebGame.Controllers {
         }
 
         [HttpGet]
-        [Route ("profile")]
         [Authorize]
         public async Task<IActionResult> profile () {
             var userId = User.FindFirstValue (ClaimTypes.NameIdentifier); // will give the user's userId
@@ -25,8 +25,19 @@ namespace MainWebGame.Controllers {
 
             ApplicationUser applicationUser = await _userManager.GetUserAsync (User);
             if (applicationUser != null)
-                return Ok (new { Id = applicationUser.Id, UserName = applicationUser.UserName, PlayerName = applicationUser.PlayerName });
+                return Ok (new { Id = applicationUser.Id, UserName = applicationUser.UserName, PlayerName = applicationUser.PlayerName, Photo = applicationUser.Photo });
             else return Ok (null);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> photo (ApplicationUser user) {
+            ApplicationUser applicationUser = await _userManager.FindByIdAsync (user.Id);
+            if (applicationUser != null) {
+                applicationUser.Photo = user.Photo;
+                var result = await _userManager.UpdateAsync (applicationUser);
+            }
+            return Ok (true);
         }
 
     }

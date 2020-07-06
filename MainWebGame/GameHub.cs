@@ -52,7 +52,7 @@ namespace MainWebGame {
                 if (oppConnection.Playing) {
                     throw new SystemException ($"{oppConnection.PlayerName} sedang bermain");
                 }
-                var game = new Game { Owner = myConnection, Opponent = oppConnection };
+                var game = new Game { Owner = myConnection, Opponent = oppConnection, Tanggal = DateTime.Now };
                 Games.Add (game);
                 await Start (game);
             } catch (System.Exception ex) {
@@ -100,22 +100,13 @@ namespace MainWebGame {
                 Games.Remove (game);
             await Task.Delay (100);
             var userWin = game.Owner.PlayerName;
-            var scoreOwner = _scoreContext.Scores.Where (x => x.UserId == game.Owner.UserId).FirstOrDefault ();
-            var scoreOpponnent = _scoreContext.Scores.Where (x => x.UserId == game.Opponent.UserId).FirstOrDefault ();
-            if (game.Owner.Point == game.Opponent.Point) {
-                scoreOwner.Score = scoreOwner.Score + game.Owner.Point;
-                scoreOpponnent.Score = scoreOpponnent.Score + game.Opponent.Point;
-            } else
-            if (game.Owner.Point > game.Opponent.Point) {
-                scoreOwner.Score = scoreOwner.Score + game.Owner.Point;
-                scoreOwner.Win++;
-                scoreOpponnent.Lost++;
-            } else {
-                userWin = game.Opponent.PlayerName;
-                scoreOpponnent.Score = scoreOpponnent.Score + game.Opponent.Point;
-                scoreOpponnent.Win++;
-                scoreOwner.Lost++;
-            }
+
+            var tantangan = new Tantangan {
+                UserId = game.Owner.UserId, LawanId = game.Opponent.UserId, Tanggal = game.Tanggal,
+                UserScore = game.Owner.Point, LawanScore = game.Opponent.Point
+            };
+            _scoreContext.Tantangan.Add (tantangan);
+
             await _scoreContext.SaveChangesAsync ();
             updateRank ();
         }
@@ -143,13 +134,13 @@ namespace MainWebGame {
             if (user != null) {
                 user.ConnectionId = Context.ConnectionId;
             } else {
-                user = new UserConnection { ConnectionId = Context.ConnectionId, UserName = userDb.UserName, PlayerName = userDb.PlayerName, UserId = userDb.Id };
-                user.Score = _scoreContext.Scores.Where (x => x.UserId == userDb.Id).FirstOrDefault ();
-                if (user.Score == null) {
-                    user.Score = new ScoreModel { Lost = 0, Score = 0, UserId = userDb.Id, Win = 0 };
-                    _scoreContext.Add (user.Score);
-                    _scoreContext.SaveChanges ();
-                }
+                user = new UserConnection { Photo = userDb.Photo, ConnectionId = Context.ConnectionId, UserName = userDb.UserName, PlayerName = userDb.PlayerName, UserId = userDb.Id };
+                // user.Score = _scoreContext.Scores.Where (x => x.UserId == userDb.Id).FirstOrDefault ();
+                // if (user.Score == null) {
+                //     user.Score = new ScoreModel { Lost = 0, Score = 0, UserId = userDb.Id, Win = 0 };
+                //     _scoreContext.Add (user.Score);
+                //     _scoreContext.SaveChanges ();
+                // }
 
                 connections.Add (user);
             }
@@ -205,12 +196,14 @@ namespace MainWebGame {
         public int Rank { get; set; }
         public int Pion { get; set; }
         public int Point { get; set; }
+        public byte[] Photo { get; set; }
     }
 
     public class Game {
         public string GameId { get; set; } = Guid.NewGuid ().ToString ();
         public UserConnection Opponent { get; set; }
         public UserConnection Owner { get; set; }
+        public DateTime Tanggal { get; set; }
     }
 
     public class PlayerStatus {

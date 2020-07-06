@@ -231,3 +231,87 @@ body {
         height: 100%;
     }
 }
+
+.modalHistory {
+    min-height: 90%;
+}
+
+.blackHistory {
+    background: rgb(101, 209, 39);
+    transform: rotateY(0deg);
+}
+
+.whiteHistory {
+    background: white;
+    transform: rotateY(180deg);
+}
+
+.blackHistory,
+.whiteHistory {
+    width: 70%;
+    height: 70%;
+    border-radius: 50%;
+    display: block;
+    margin: auto;
+    vertical-align: middle;
+    box-shadow: 0px 4px 10px #482915;
+}
+
+#historyMain {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 90%;
+}
+
+.historyTable {
+    width: 100%;
+    height: 100%;
+}
+
+.historyTable td,
+.table th {
+    padding: 0.15rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.historyBoard {
+    flex: 50%;
+    height: 400px;
+    margin: 10px;
+    table {
+        height: 100%;
+        tbody {
+            tr {
+                height: calc(100% / 8);
+                background-color: yellowgreen;
+                display: flex;
+                align-self: stretch;
+                td {
+                    display: flex;
+                    height: 100%;
+                    width: calc(100% / 8);
+                    border: 0.1px #2cd6ec solid;
+                    background: #ffffff;
+                    box-shadow: inset 9px 9px 18px #b3b3b3, inset -9px -9px 18px #ffffff;
+                    .node {
+                        width: 80%;
+                        height: 80%;
+                        margin: auto;
+                        align-self: center;
+                        border-radius: 50%;
+                        background: #595959;
+                        box-shadow: -6px 6px 12px #dfdfdf, 6px -6px 12px #949393;
+                    }
+                }
+            }
+        }
+    }
+}
+
+#Awal,
+#Akhir {
+    margin: 10px;
+    color: black;
+    text-align: center;
+}

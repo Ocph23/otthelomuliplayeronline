@@ -136,29 +136,29 @@ function AI(othe) {
 			if (m[v.s] == 0) {
 				corner += m[v.a] * -3;
 				corner += m[v.b] * -3;
-				corner += m[v.c] * -6;
+				corner += m[v.c] * -60;
 				continue;
 			}
-			corner += m[v.s] * 15;
-			steady += m[v.s];
-			for (var k = 0; k < 2; k++) {
-				if (uk[v.s + v.dr[k]]) continue;
-				var eb = true,
-					tmp = 0;
-				for (var j = 1; j <= 6; j++) {
-					var t = m[v.s + v.dr[k] * j];
-					if (t == 0) break;
-					else if (eb && t == m[v.s]) steady += t;
-					else {
-						eb = false;
-						tmp += t;
-					}
-				}
-				if (j == 7 && m[v.s + v.dr[k] * 7] != 0) {
-					steady += tmp;
-					uk[v.s + v.dr[k] * 6] = true;
-				}
-			}
+			corner += m[v.s] * 75;
+			// steady += m[v.s];
+			// for (var k = 0; k < 2; k++) {
+			// 	if (uk[v.s + v.dr[k]]) continue;
+			// 	var eb = true,
+			// 		tmp = 0;
+			// 	for (var j = 1; j <= 6; j++) {
+			// 		var t = m[v.s + v.dr[k] * j];
+			// 		if (t == 0) break;
+			// 		else if (eb && t == m[v.s]) steady += t;
+			// 		else {
+			// 			eb = false;
+			// 			tmp += t;
+			// 		}
+			// 	}
+			// 	if (j == 7 && m[v.s + v.dr[k] * 7] != 0) {
+			// 		steady += tmp;
+			// 		uk[v.s + v.dr[k] * 6] = true;
+			// 	}
+			// }
 		}
 
 		var frontier = 0;
@@ -179,7 +179,7 @@ function AI(othe) {
 		}
 
 		var mobility = m.nextNum;
-		var rv = corner + (m.side == 1 ? m.nextNum : m.prevNum) + mobility;
+		var rv = corner + (frontierO - frontierX) + mobility;
 
 		console.log('Frontier X =' + frontierX);
 		console.log('Frontier O =' + frontierO);
@@ -187,7 +187,7 @@ function AI(othe) {
 		console.log('Mobility  X =' + m.nextNum);
 		console.log('Mobility  O =' + m.prevNum);
 		//oo.printMap(m);
-		console.log('____________________________\r\n');
+		console.log('Analisa For : ' + m.side + ' value = ' + rv * m.side + '\r\n\r\n');
 
 		return rv * m.side;
 	}
@@ -200,11 +200,12 @@ function AI(othe) {
 
 	oo.startSearch = function(m) {
 		var f = 0;
+		console.log('Start ...\n\r');
 		if (m.space <= oo.outcomeDepth) {
 			outTime = new Date().getTime() + 600000;
 			maxDepth = m.space;
 
-			if (maxDepth >= oo.outcomeDepth) f = alphaBeta(m, maxDepth, -Infinity, Infinity);
+			if (maxDepth >= outcomeCoarse) f = alphaBeta(m, maxDepth, -Infinity, Infinity);
 			else f = mtd(m, maxDepth, f);
 
 			console.log('End-game search result：', maxDepth, m.space, m.side, f * m.side);
@@ -215,7 +216,9 @@ function AI(othe) {
 		maxDepth = 0;
 
 		try {
-			while (maxDepth < oo.outcomeDepth) {
+			//Maximum Deep Serach Here
+			while (maxDepth <= oo.outcomeDepth) {
+				console.log('Deep : ' + (maxDepth + 1));
 				f = mtd(m, ++maxDepth, f);
 
 				var best = hash.getBest(m.key);
@@ -238,7 +241,10 @@ function AI(othe) {
 			if (f < beta) upper = f;
 			else lower = f;
 		} while (lower < upper);
-		if (f < beta) f = alphaBeta(m, depth, f - 1, f);
+		if (f < beta) {
+			f = alphaBeta(m, depth, f - 1, f);
+		}
+		console.log('F >= beta：', f, beta);
 		return f;
 	}
 
@@ -255,6 +261,7 @@ function AI(othe) {
 			othe.pass(m);
 			return -alphaBeta(m, depth, -beta, -alpha);
 		}
+
 		if (depth <= 0) {
 			var e = evaluation(m);
 			hash.set(m.key, e, depth, 0, null);
@@ -278,23 +285,24 @@ function AI(othe) {
 					alpha = v;
 					hashf = 0;
 					moveToUp(hist, n);
-					console.log('V Naik Ke Atas = ' + v);
+					console.log('V Naik Ke Atas = ' + v, n - i);
 				}
 				if (v >= beta) {
 					hashf = 2;
 					console.log('Stop For Prun ' + v + '>=' + beta);
 					break;
 				}
-			} else console.log('V Turun  = ' + v);
+			} else console.log('Kesamping   = ' + v);
 		}
 		moveToHead(hist, bestAct);
 
 		hash.set(m.key, bestVal, depth, hashf, bestAct);
-		console.log('Move To Head : ' + bestAct);
+
 		return bestVal;
 	}
 
 	function moveToHead(arr, n) {
+		//console.log('Move To Head : ' + n);
 		if (arr[0] == n) return;
 		var i = arr.indexOf(n);
 		arr.splice(i, 1);

@@ -1,14 +1,12 @@
 <h4>Profile</h4>
 <hr />
 <div class="user">
-    <div class="user-avatar">
-        <img src="images/images.jfif" alt="">
+    <div class="user-avatar" choose-file>
+        <input file-input id="file" ng-model="photo" type="file" hidden>
+        <img style="height: 45px; width: 45px;" id="photo" ng-src="{{'data:image/png;base64,'+ photos}}">
     </div>
     <div class="user-detail">
-        <div class="user-name">{{playerService.MyAccount.playerName}}</div>
-        <div class="user-win">Rangking :{{playerService.MyAccount.score.rank}} </div>
-        <div class="user-lost">Menang : {{playerService.MyAccount.score.win}} , Kalah
-            :{{playerService.MyAccount.score.lost}} </div>
+        <div class="user-name">{{profile.playerName}}</div>
     </div>
     <div class="user-action">
         <button ng-click="playVsComputer()">Bermain</button>

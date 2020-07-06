@@ -6,7 +6,7 @@
                 <div class="black"></div>
 
             </div>
-            <label>{{side1}}</label>
+            <label id="playerSide1">{{side1}}</label>
         </div>
         <div class="score-item">
             <div class="text-center">
@@ -19,7 +19,7 @@
                 <span>0</span>
                 <div class="white"></div>
             </div>
-            <label>{{side2}}</label>
+            <label id="playerSide2">{{side2}}</label>
         </div>
     </div>
     <div style="--aspect-ratio:1/1;">
@@ -30,6 +30,8 @@
         <!--div id="back" class="button">Retract</div-->
         <button id="2d3d" class="button">3D</button>
         <button id="ai" ng-disabled="!myPlay" class="button" ng-click="AiPlay()">AI</button>
+        <button id="btnHistory" class="button" data-toggle="modal" data-target="#history"
+            ng-click="showHistory()">History</button>
         <!--div-- id="explain" class="button">About</!--div-->
     </div>
 </div>
@@ -57,5 +59,22 @@
                 <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="start(model)">Main</button>
             </div>
         </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade modalHistory" id="history" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog  modal-xl" role="document">
+        <div class="modal-content">
+            <div id="historyMain" style="max-height: 90vh; overflow: scroll;">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
+            </div>
+        </div>
+
     </div>
 </div>

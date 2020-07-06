@@ -1,0 +1,32 @@
+<h4>Papan Peringkat</h4>
+<hr />
+
+<div class="admin-pemain">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Ranking</th>
+                <th scope="col">Nama Pemain</th>
+                <th scope="col">Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in datas" ng-class="(item.id==userId) ? ['bgMine'] : []">
+                <td scope="row">{{$index+1}}</td>
+                <td>{{item.playerName}}</td>
+                <td>{{item.score}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<style>
+    th,
+    td {
+        color: white;
+    }
+
+    .bgMine {
+        background: yellowgreen;
+    }
+</style>

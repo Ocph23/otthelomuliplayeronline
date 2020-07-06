@@ -10,11 +10,12 @@
     <link rel="stylesheet" href="~/css/otthelo.css" />
     <link rel="stylesheet" href="~/css/board.css" />
     <link rel="stylesheet" href="~/lib/sweetalert2/dist/sweetalert2.css" />
+
   
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">Game Othello</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -22,20 +23,13 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <partial name="_LoginPartial" />
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        
-                       
-                    </ul>
+                    <partial name="_LoginPartialAdmin" />
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
-        @RenderBody()
+          @RenderBody()
     </div>
 
     <footer class="border-top footer text-muted">
@@ -54,9 +48,8 @@
     <script src="~/apps/gameLib/chessboard1.lib.js"></script>
     <script src="~/apps/gameLib/othello.lib.js"></script>
     
-    <script src="~/apps/app.js"></script>
-    <script src="~/apps/routers/app.router.js"></script>
-    <script src="~/apps/routers/account.router.js"></script>
+    <script src="~/apps/admin.app.js"></script>
+    <script src="~/apps/routers/admin.router.js"></script>
 
     <script src="~/apps/services/app.services.js"></script>
     <script src="~/apps/services/auth.services.js"></script>
@@ -65,7 +58,7 @@
     <script src="~/apps/services/message.services.js"></script>
     <script src="~/apps/services/storage.services.js"></script>
 
-    <script src="~/apps/controllers/app.controller.js"></script>
+    <script src="~/apps/controllers/admin.controller.js"></script>
     <script src="~/apps/controllers/account.controllers.js"></script>
 
     <script src="~/apps/components/app.component.js"></script>

@@ -1,5 +1,9 @@
 ('use strict');
-angular.module('data.service', []).factory('GameService', GameService).factory('PlayerService', PlayerService);
+angular
+	.module('data.service', [])
+	.factory('GameService', GameService)
+	.factory('PeraturanService', PeraturanService)
+	.factory('PlayerService', PlayerService);
 
 function PlayerService($q, message, $state) {
 	var service = {};
@@ -146,6 +150,192 @@ function GameService($http, PlayerService, $state, $q) {
 			desk.className = desk.className == 'fdd' ? '' : 'fdd';
 			this.innerHTML = desk.className == 'fdd' ? '2D' : '3D';
 		};
+	};
+
+	service.getHistory = () => {
+		return othe.getHistory();
+	};
+
+	return service;
+}
+
+function PeraturanService($http, $q, message, helperServices, AuthService) {
+	var controller = '/api/peraturan';
+	var service = {};
+
+	service.isInstance = false;
+
+	service.get = () => {
+		var def = $q.defer();
+		if (service.isInstance) def.resolve(service.data);
+		else {
+			$http({
+				method: 'get',
+				url: helperServices.url + controller,
+				headers: AuthService.getHeader()
+			}).then(
+				(res) => {
+					service.isInstance = true;
+					service.data = res.data;
+					def.resolve(res.data);
+				},
+				(err) => {
+					message.error(err);
+					def.reject();
+				}
+			);
+		}
+
+		return def.promise;
+	};
+
+	service.getPemain = () => {
+		var def = $q.defer();
+		if (service.isInstancePemain) def.resolve(service.dataPemain);
+		else {
+			$http({
+				method: 'get',
+				url: helperServices.url + '/api/pemain',
+				headers: AuthService.getHeader()
+			}).then(
+				(res) => {
+					service.isInstancePemain = true;
+					service.dataPemain = res.data;
+					def.resolve(res.data);
+				},
+				(err) => {
+					message.error(err);
+					def.reject();
+				}
+			);
+		}
+
+		return def.promise;
+	};
+
+	service.getTantangan = () => {
+		var def = $q.defer();
+		$http({
+			method: 'get',
+			url: helperServices.url + '/api/tantangan',
+			headers: AuthService.getHeader()
+		}).then(
+			(res) => {
+				def.resolve(res.data);
+			},
+			(err) => {
+				message.error(err);
+				def.reject();
+			}
+		);
+		return def.promise;
+	};
+
+	service.getPeringkat = () => {
+		var def = $q.defer();
+		$http({
+			method: 'get',
+			url: helperServices.url + '/api/peringkat',
+			headers: AuthService.getHeader()
+		}).then(
+			(res) => {
+				def.resolve(res.data);
+			},
+			(err) => {
+				message.error(err);
+				def.reject();
+			}
+		);
+		return def.promise;
+	};
+
+	service.post = (data) => {
+		var def = $q.defer();
+		$http({
+			method: 'post',
+			url: helperServices.url + controller,
+			headers: AuthService.getHeader(),
+			data: data
+		}).then(
+			(res) => {
+				service.data.push(res.data);
+				def.resolve(res.data);
+			},
+			(err) => {
+				message.error(err);
+				def.reject();
+			}
+		);
+
+		return def.promise;
+	};
+
+	service.put = (data) => {
+		var def = $q.defer();
+		$http({
+			method: 'put',
+			url: helperServices.url + controller,
+			headers: AuthService.getHeader(),
+			data: data
+		}).then(
+			(res) => {
+				var item = service.data.find((x) => x.idPeraturan == data.idPeraturan);
+				if (item) {
+					item.keterangan = data.keterangan;
+				}
+				def.resolve(res.data);
+			},
+			(err) => {
+				message.error(err);
+				def.reject();
+			}
+		);
+
+		return def.promise;
+	};
+
+	service.delete = (id) => {
+		var def = $q.defer();
+		$http({
+			method: 'delete',
+			url: helperServices.url + controller + '?id=' + id,
+			headers: AuthService.getHeader()
+		}).then(
+			(res) => {
+				var item = service.data.find((x) => (x.idPeraturan = id));
+				var index = service.data.indexOf(item);
+				service.data.splice(index, 1);
+				def.resolve(res.data);
+			},
+			(err) => {
+				message.error(err);
+				def.reject();
+			}
+		);
+
+		return def.promise;
+	};
+
+	service.deletePemain = (model) => {
+		var def = $q.defer();
+		$http({
+			method: 'delete',
+			url: helperServices.url + '/api/pemain/?id=' + model.id,
+			headers: AuthService.getHeader()
+		}).then(
+			(res) => {
+				var item = service.dataPemain.find((x) => (x.id = model.id));
+				var index = service.dataPemain.indexOf(item);
+				service.dataPemain.splice(index, 1);
+				def.resolve(res.data);
+			},
+			(err) => {
+				message.error(err);
+				def.reject();
+			}
+		);
+
+		return def.promise;
 	};
 
 	return service;

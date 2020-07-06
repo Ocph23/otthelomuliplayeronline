@@ -1,0 +1,22 @@
+﻿@page
+@model MainWebGame.Pages.Admin.indexModel
+@{
+    ViewData["Title"] = "index";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<div ng-app="admin" class="main">
+    <div class="leftSide">
+        <ul>
+            <li><a  ng-click="">Selamat Datang</a></li>
+            <li> <a ui-sref="admin" ui-sref-active="active"><i class="fa fa-home fa-2x"></i> Beranda</a></li>
+            <li><a  ui-sref="peraturan"><i class="fa fa-cogs fa-2x"></i> Data Aturan</a></li>
+            <li><a  ui-sref="pemain"><i class="fa fa-user fa-2x"></i> Data Pemain</a></li>
+            <li><a  ui-sref="tantangan"><i class="fa fa-trophy fa-2x"></i> Data Tantangan</a></li>
+        </ul>
+    </div>
+    <div class="mainSide">
+        <ui-view></ui-view>
+    </div>
+</div>
+

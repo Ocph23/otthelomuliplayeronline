@@ -1,9 +1,10 @@
 ﻿@page
 @model MainWebGame.Pages.Game.indexModel
 @{
-ViewData["Title"] = "index";
+    ViewData["Title"] = "index";
+    Layout = "~/Pages/Shared/_GameLayout.cshtml";
 }
 
 <div ng-app="app">
-<ui-view></ui-view>
+    <ui-view></ui-view>
 </div>
