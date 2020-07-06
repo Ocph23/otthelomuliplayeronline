@@ -53,25 +53,20 @@ function AuthService($http, $q, StorageService, $state, helperServices, message)
 
 	function profile() {
 		var def = $q.defer();
-		var result = StorageService.getObject('profile');
-		if (result) {
-			def.resolve(result);
-		} else {
-			$http({
-				method: 'get',
-				url: helperServices.url + controller + '/profile',
-				headers: getHeader()
-			}).then(
-				(res) => {
-					StorageService.addObject('profile', res.data);
-					def.resolve(res.data);
-				},
-				(err) => {
-					message.error(err);
-					def.reject();
-				}
-			);
-		}
+		$http({
+			method: 'get',
+			url: helperServices.url + controller + '/profile',
+			headers: getHeader()
+		}).then(
+			(res) => {
+				StorageService.addObject('profile', res.data);
+				def.resolve(res.data);
+			},
+			(err) => {
+				message.error(err);
+				def.reject();
+			}
+		);
 
 		return def.promise;
 	}
