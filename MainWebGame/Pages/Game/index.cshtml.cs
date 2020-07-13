@@ -7,10 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace MainWebGame.Pages.Game {
-    [Authorize]
+    [Authorize (Roles = "Player")]
     public class indexModel : PageModel {
-        public void OnGet () {
-
-        }
+        public void OnGet () { }
     }
 }

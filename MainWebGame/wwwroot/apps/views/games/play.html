@@ -5,7 +5,7 @@
                 <span>0</span>
                 <div class="black"></div>
             </div>
-            <label>{{side1}}</label>
+            <label id="playerSide1">{{side1}}</label>
         </div>
         <div class="score-item">
             <div class="text-center">
@@ -18,18 +18,19 @@
                 <span>0</span>
                 <div class="white"></div>
             </div>
-            <label>{{side2}}</label>
+            <label id="playerSide2">{{side2}}</label>
         </div>
     </div>
     <div style="--aspect-ratio:1/1;">
         <div id="chessboard"></div>
     </div>
     <div class="bottom-menu">
-        <button id="play" ng-click="menyerah()" class="button">Menyerah</button>
+        <button id="play" ng-click="menyerah()" class="btn btn-danger">Menyerah</button>
         <!--div id="back" class="button">Retract</div-->
-        <button id="2d3d" class="button">3D</button>
-        <button id="ai" class="button" ng-click="AiPlay()">AI</button>
-        <!--div-- id="explain" class="button">About</!--div-->
+        <button id="2d3d" class="btn btn-primary">3D</button>
+        <button id="ai" ng-disabled="mePlay" class="btn btn-warning" ng-click="AiPlay()">Solusi</button>
+        <button id="btnHistory" class="btn btn-info" data-toggle="modal" data-target="#history"
+            ng-click="showHistory()">History</button>
     </div>
 </div>
 
@@ -46,3 +47,31 @@
         <div id="cancel" class="button">Cancel</div>
     </div>
 </div>
+
+
+
+<div class="modal fade modalHistory" id="history" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog  modal-xl" role="document">
+        <div class="modal-content">
+            <div id="historyMain" style="max-height: 90vh; overflow: scroll;">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<style>
+    #ai:disabled {
+        background-color: rgb(190, 188, 188);
+    }
+
+    .btn {
+        margin: 2px;
+    }
+</style>

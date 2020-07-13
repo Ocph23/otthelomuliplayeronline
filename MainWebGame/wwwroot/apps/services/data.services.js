@@ -42,7 +42,7 @@ function PlayerService($q, message, $state) {
 
 function GameService($http, PlayerService, $state, $q) {
 	var service = {};
-	service.mePlay = false;
+	service.mePlay = null;
 	var othe = null;
 	var vsComputer = false;
 	service.MyProfile = {};
@@ -50,12 +50,16 @@ function GameService($http, PlayerService, $state, $q) {
 		othe.AiGo();
 	};
 
+	service.getOtthelo = () => {
+		return othe;
+	};
+
 	service.resign = () => {
 		PlayerService.connection.invoke('Resign');
 	};
 
 	service.start = (game) => {
-		othe = new OthelloOnline(PlayerService.connection);
+		othe = new OthelloOnline(PlayerService.connection, game.mePlay);
 		othe.game = game;
 		othe.board.create();
 		othe.toDown = othe.goChess;
@@ -119,16 +123,16 @@ function GameService($http, PlayerService, $state, $q) {
 	};
 
 	service.startVsComputer = (params) => {
-		othe = new Othello();
+		othe = new Othello(params);
 		vsComputer = true;
 		othe.aiRuning = true;
 		othe.board.create();
-
 		othe.pion = params.pion;
+		othe.mePlay = true;
+		service.mePlay = othe.getMePlay;
 		if (othe.pion == -1) {
 			var chessB = document.getElementById('chessboard');
 			chessB.className = 'opponent';
-			othe.mePlay = true;
 		} else {
 			othe.timerStart();
 		}
@@ -142,7 +146,7 @@ function GameService($http, PlayerService, $state, $q) {
 		}
 
 		othe.ai.calculateTime = [ 20, 100, 500, 2000, 5000, 10000, 20000 ][params.level - 1];
-		othe.ai.outcomeDepth = [ 2, 3, 4, 5, 6, 7, 8 ][params.level - 1];
+		othe.ai.outcomeDepth = 2; // [ 2, 3, 4, 5, 6, 7, 8 ][params.level - 1];
 		othe.play();
 
 		document.getElementById('2d3d').onclick = function() {
@@ -236,6 +240,24 @@ function PeraturanService($http, $q, message, helperServices, AuthService) {
 		$http({
 			method: 'get',
 			url: helperServices.url + '/api/peringkat',
+			headers: AuthService.getHeader()
+		}).then(
+			(res) => {
+				def.resolve(res.data);
+			},
+			(err) => {
+				message.error(err);
+				def.reject();
+			}
+		);
+		return def.promise;
+	};
+
+	service.getStatistik = (userid) => {
+		var def = $q.defer();
+		$http({
+			method: 'get',
+			url: helperServices.url + '/api/statistic?userId=' + userid,
 			headers: AuthService.getHeader()
 		}).then(
 			(res) => {

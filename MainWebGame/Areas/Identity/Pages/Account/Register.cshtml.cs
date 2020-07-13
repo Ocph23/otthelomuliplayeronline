@@ -76,6 +76,7 @@ namespace MainWebGame.Areas.Identity.Pages.Account {
             if (ModelState.IsValid) {
                 var user = new ApplicationUser { PlayerName = Input.PlayerName, UserName = Input.Email, Email = Input.Email };
                 var result = await _userManager.CreateAsync (user, Input.Password);
+                await _userManager.AddToRolesAsync (user, new List<string> { "Player" });
                 if (result.Succeeded) {
                     _logger.LogInformation ("User created a new account with password.");
 

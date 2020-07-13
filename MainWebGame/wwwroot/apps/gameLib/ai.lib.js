@@ -2,8 +2,8 @@ function AI(othe) {
 	var oo = this;
 	oo.calculateTime = 1000;
 	oo.outcomeDepth = 2;
-	var outcomeCoarse = 15;
-	var maxDepth;
+	var outcomeCoarse = 2;
+	var maxDepth = 2;
 	var outTime;
 	let dataBoards = [ 8, 16, 24, 32, 40, 48, 56, 64 ];
 	var weight = [ 6, 11, 2, 2, 3 ];
@@ -140,25 +140,6 @@ function AI(othe) {
 				continue;
 			}
 			corner += m[v.s] * 75;
-			// steady += m[v.s];
-			// for (var k = 0; k < 2; k++) {
-			// 	if (uk[v.s + v.dr[k]]) continue;
-			// 	var eb = true,
-			// 		tmp = 0;
-			// 	for (var j = 1; j <= 6; j++) {
-			// 		var t = m[v.s + v.dr[k] * j];
-			// 		if (t == 0) break;
-			// 		else if (eb && t == m[v.s]) steady += t;
-			// 		else {
-			// 			eb = false;
-			// 			tmp += t;
-			// 		}
-			// 	}
-			// 	if (j == 7 && m[v.s + v.dr[k] * 7] != 0) {
-			// 		steady += tmp;
-			// 		uk[v.s + v.dr[k] * 6] = true;
-			// 	}
-			// }
 		}
 
 		var frontier = 0;
@@ -179,13 +160,10 @@ function AI(othe) {
 		}
 
 		var mobility = m.nextNum;
-		var rv = corner + (frontierO - frontierX) + mobility;
-
-		console.log('Frontier X =' + frontierX);
-		console.log('Frontier O =' + frontierO);
+		var rv = corner + frontier + (m.nextNum - m.prevNum);
+		console.log('Frontier =' + frontier);
 		console.log('Corner  =' + corner);
-		console.log('Mobility  X =' + m.nextNum);
-		console.log('Mobility  O =' + m.prevNum);
+		console.log('Mobility  X =' + (m.nextNum - m.prevNum));
 		//oo.printMap(m);
 		console.log('Analisa For : ' + m.side + ' value = ' + rv * m.side + '\r\n\r\n');
 
@@ -217,7 +195,7 @@ function AI(othe) {
 
 		try {
 			//Maximum Deep Serach Here
-			while (maxDepth <= oo.outcomeDepth) {
+			while (maxDepth < oo.outcomeDepth) {
 				console.log('Deep : ' + (maxDepth + 1));
 				f = mtd(m, ++maxDepth, f);
 

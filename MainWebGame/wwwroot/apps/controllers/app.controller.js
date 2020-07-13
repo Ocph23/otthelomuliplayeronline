@@ -2,6 +2,8 @@ angular
 	.module('app.controller', [ 'account.controller' ])
 	.controller('gameHomeController', gameHomeController)
 	.controller('peringkatController', peringkatController)
+	.controller('profileController', profileController)
+	.controller('aturanController', aturanController)
 	.controller('gameVsComputerController', gameVsComputerController)
 	.controller('gamePlayController', gamePlayController);
 
@@ -78,18 +80,44 @@ function gameHomeController($scope, PlayerService, $state, message, AuthService)
 }
 
 function gamePlayController($scope, GameService, $state, $stateParams) {
+	$scope.changeMePlay = (data) => {
+		$scope.$apply((x) => {
+			$scope.mePlay = data;
+		});
+	};
+
 	if ($stateParams.data) {
 		$scope.side1 = $stateParams.data.owner.playerName;
 		$scope.side2 = $stateParams.data.opponent.playerName;
 		setTimeout(() => {
+			$stateParams.data.mePlay = $scope.changeMePlay;
 			GameService.start($stateParams.data);
 		}, 500);
 	} else {
 		$state.go('game-home');
 	}
 
-	$scope.AiPlay = () => {
+    $scope.AiPlay = () => {
+     
 		GameService.AiPlay();
+	};
+	$scope.showHistory = () => {
+		$scope.datas = GameService.getHistory();
+		var historyMain = document.getElementById('historyMain');
+		historyMain.innerHTML = '';
+		var id = 1;
+
+		generateHeader(historyMain, 'Awal');
+		generateHeader(historyMain, 'Akhir');
+
+		for (let index = 0; index < $scope.datas.length; index++) {
+			if (index > 1) {
+				generate(historyMain, id++, $scope.datas[index - 1]);
+				generate(historyMain, id++, $scope.datas[index]);
+			} else {
+				generate(historyMain, id++, $scope.datas[index]);
+			}
+		}
 	};
 }
 
@@ -97,6 +125,15 @@ function gameVsComputerController($scope, $state, GameService, $state) {
 	var playerName = document.getElementById('playerName').value;
 	$scope.model = { pion: '1', level: '2' };
 	$('#exampleModal').modal('show');
+
+	$scope.changeMePlay = (data) => {
+		$scope.$apply((x) => {
+			$scope.mePlay = data;
+		});
+	};
+
+	$scope.model = {};
+	$scope.model.mePlay = $scope.changeMePlay;
 
 	$scope.start = (params) => {
 		if (params.pion == 1) {
@@ -107,7 +144,7 @@ function gameVsComputerController($scope, $state, GameService, $state) {
 			$scope.side1 = 'Computer';
 		}
 		GameService.startVsComputer(params);
-		$scope.myPlay = GameService.mePlay;
+		$scope.otthe = GameService.getOtthelo();
 	};
 
 	$scope.cancel = () => {
@@ -116,7 +153,7 @@ function gameVsComputerController($scope, $state, GameService, $state) {
 		}, 500);
 	};
 
-	$scope.AiPlay = () => {
+    $scope.AiPlay = () => {
 		GameService.AiPlay();
 	};
 
@@ -142,55 +179,6 @@ function gameVsComputerController($scope, $state, GameService, $state) {
 			}
 		}
 	};
-
-	function generate(historyMain, id, m) {
-		g = document.createElement('div');
-		g.setAttribute('id', 'board' + id);
-		g.setAttribute('class', 'historyBoard');
-		historyMain.appendChild(g);
-
-		var obj = document.getElementById('board' + id);
-		var html = "<table class='table historyTable' >";
-		for (var i = 0; i < 8; i++) {
-			html += '<tr>';
-			for (var j = 0; j < 8; j++) html += "<td class='bg" + (j + i) % 2 + "'><div></div></td>";
-			html += '</tr>';
-		}
-		html += '</table>';
-		obj.innerHTML = html;
-		pieces = obj.getElementsByTagName('div');
-		bindEvent(obj.getElementsByTagName('td'));
-		piecesnum = document.getElementById('score').getElementsByTagName('span');
-		side = {
-			'1': document.getElementById('side1'),
-			'-1': document.getElementById('side2')
-		};
-
-		for (var i = 0; i < 64; i++) {
-			pieces[i].className = [ 'whiteHistory', '', 'blackHistory' ][m[i] + 1];
-		}
-
-		side[m.side].className = 'cbox side';
-		side[-m.side].className = 'cbox';
-	}
-
-	function generateHeader(historyMain, name) {
-		g = document.createElement('div');
-		g.setAttribute('id', name);
-		historyMain.appendChild(g);
-		var html = name;
-		g.innerHTML = html;
-	}
-
-	function bindEvent(td) {
-		for (var i = 0; i < 64; i++)
-			(function(i) {
-				td[i].onclick = function() {
-					if (pieces[i].className == 'prompt') chessBoard.toDown(i);
-				};
-			})(i);
-		td = undefined;
-	}
 }
 
 function peringkatController($scope, PlayerService, PeraturanService) {
@@ -200,4 +188,99 @@ function peringkatController($scope, PlayerService, PeraturanService) {
 	PeraturanService.getPeringkat().then((x) => {
 		$scope.datas = x;
 	});
+}
+
+function aturanController($scope, PlayerService, PeraturanService) {
+	$scope.userId = PlayerService.getMyUserId();
+	$scope.playerService = PlayerService;
+
+	PeraturanService.get().then((x) => {
+		$scope.datas = x;
+	});
+}
+
+function profileController($scope, PlayerService, PeraturanService) {
+	$scope.userId = PlayerService.getMyUserId();
+	$scope.playerService = PlayerService;
+
+	PeraturanService.getStatistik($scope.userId).then((x) => {
+		$scope.datas = x;
+		$scope.resume = x.resume;
+		var labels = [];
+		var datas = [];
+		x.data.forEach((element) => {
+			labels.push(element.label);
+			datas.push(element.score);
+		});
+
+		var ctx = document.getElementById('myChart').getContext('2d');
+		var chart = new Chart(ctx, {
+			// The type of chart we want to create
+			type: 'line',
+
+			// The data for our dataset
+			data: {
+				labels: labels,
+				datasets: [
+					{
+						label: 'Score',
+						borderColor: 'rgb(255, 99, 132)',
+						data: datas
+					}
+				]
+			},
+
+			// Configuration options go here
+			options: {}
+		});
+	});
+}
+
+function generate(historyMain, id, m) {
+	g = document.createElement('div');
+	g.setAttribute('id', 'board' + id);
+	g.setAttribute('class', 'historyBoard');
+	historyMain.appendChild(g);
+
+	var obj = document.getElementById('board' + id);
+	var html = "<table class='table historyTable' >";
+	for (var i = 0; i < 8; i++) {
+		html += '<tr>';
+		for (var j = 0; j < 8; j++) html += "<td class='bg" + (j + i) % 2 + "'><div></div></td>";
+		html += '</tr>';
+	}
+	html += '</table>';
+	obj.innerHTML = html;
+	pieces = obj.getElementsByTagName('div');
+	bindEvent(obj.getElementsByTagName('td'));
+	piecesnum = document.getElementById('score').getElementsByTagName('span');
+	side = {
+		'1': document.getElementById('side1'),
+		'-1': document.getElementById('side2')
+	};
+
+	for (var i = 0; i < 64; i++) {
+		pieces[i].className = [ 'whiteHistory', '', 'blackHistory' ][m[i] + 1];
+	}
+
+	side[m.side].className = 'cbox side';
+	side[-m.side].className = 'cbox';
+}
+
+function generateHeader(historyMain, name) {
+	g = document.createElement('div');
+	g.setAttribute('id', name);
+	historyMain.appendChild(g);
+	var html = name;
+	g.innerHTML = html;
+}
+
+function bindEvent(td) {
+	for (var i = 0; i < 64; i++)
+		(function(i) {
+			td[i].onclick = function() {
+				if (pieces[i].className == 'prompt') chessBoard.toDown(i);
+			};
+		})(i);
+	td = undefined;
 }

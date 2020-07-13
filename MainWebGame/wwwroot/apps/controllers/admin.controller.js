@@ -23,6 +23,8 @@ function peraturanController($scope, PeraturanService, message) {
 		} else {
 			PeraturanService.put(model).then((x) => {});
 		}
+        $('#myModal').modal('hide');
+        $scope.model = {};
 	};
 
 	$scope.delete = (item) => {

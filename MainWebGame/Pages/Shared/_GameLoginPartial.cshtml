@@ -11,7 +11,7 @@
          <input id="playerName" value="@appUser.PlayerName"/>
     </div>
     <li class="nav-item">
-        <a id="userName" class="nav-link text-dark"  href="Game#!/game/profile">@appUser.PlayerName</a>
+         <a id="userName" class="nav-link text-dark"  href="Game#!/game/profile">@appUser.PlayerName</a>
     </li>
     <li class="nav-item">
         <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post" >

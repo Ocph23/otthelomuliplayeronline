@@ -108,7 +108,6 @@ namespace MainWebGame {
             _scoreContext.Tantangan.Add (tantangan);
 
             await _scoreContext.SaveChangesAsync ();
-            updateRank ();
         }
 
         public async Task Resign () {
@@ -116,13 +115,16 @@ namespace MainWebGame {
             var game = Games.Where (x => x.Owner.UserName == name || x.Opponent.UserName == name).FirstOrDefault ();
             int resign = 1;
             if (game != null) {
-                if (game.Opponent.UserName == name)
+                if (game.Opponent.UserName == name) {
                     resign = -1;
+                    game.Opponent.Point = 0;
+                } else {
+                    game.Owner.Point = 0;
+                }
                 var cons = GetConnectionByGame (game);
                 await Clients.Client (cons.Item1).SendAsync ("OnResign", resign);
                 await Clients.Client (cons.Item2).SendAsync ("OnResign", resign);
-                Games.Remove (game);
-                //update database here
+                await GameOver (game);
             }
         }
 
@@ -150,15 +152,15 @@ namespace MainWebGame {
             await base.OnConnectedAsync ();
         }
 
-        public override Task OnDisconnectedAsync (Exception exception) {
+        public override async Task OnDisconnectedAsync (Exception exception) {
             var conid = Context.ConnectionId;
-            Resign ();
+            await Resign ();
             var item = connections.Where (x => x.ConnectionId == conid).FirstOrDefault ();
             if (item != null) {
                 connections.Remove (item);
             }
-            Clients.Others.SendAsync ("OnOfflinePlayer", conid);
-            return base.OnDisconnectedAsync (exception);
+            await Clients.Others.SendAsync ("OnOfflinePlayer", conid);
+            await base.OnDisconnectedAsync (exception);
         }
         public async Task GetUsers () {
 
@@ -176,15 +178,6 @@ namespace MainWebGame {
             return Tuple.Create (ownerCon, ooppCon);
         }
 
-        private void updateRank () {
-            var users = _scoreContext.Scores.Where (x => x.Score > 0).OrderByDescending (x => x.Score);
-            int rank = 1;
-            foreach (var item in users) {
-                item.Rank = rank;
-                rank++;
-            }
-            _scoreContext.SaveChangesAsync ();
-        }
     }
 
     public class UserConnection : PlayerStatus {

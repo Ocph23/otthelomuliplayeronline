@@ -22,12 +22,15 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <partial name="_LoginPartial" />
+                    <partial name="_GameLoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link text-dark" href="Game#!/game/home">Home</a>
                         </li>
-                           <li class="nav-item">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark"  href="Game#!/game/aturan">Aturan Main</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark"  href="Game#!/game/peringkat">Peringkat</a>
                         </li>
                        
@@ -48,6 +51,7 @@
 
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
     <script src="~/lib/angular/angular.js"></script>
     <script src="~/lib/uirouter/dist/angular-ui-router.js"></script>

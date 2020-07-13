@@ -1,4 +1,4 @@
-function Othello() {
+function Othello(param) {
 	var othello = this;
 	othello.ai = new AI(othello);
 	othello.board = new Chessboard();
@@ -182,14 +182,14 @@ function Othello() {
 
 	othello.goChess = function(n) {
 		//history.push(map);
-		//othello.connection.invoke('Play', n);
-		//othello.mePlay = !othello.mePlay;
+        //othello.connection.invoke('Play', n);
 		console.log('Player Play :');
 		othello.go(n);
 		if (othello.timer);
 		clearInterval(othello.timer);
 	};
 
+	var aTime = 1000;
 	othello.go = function(n) {
 		aiRuning = false;
 		var rev = map.next[n];
@@ -200,9 +200,14 @@ function Othello() {
 		// console.log(map.key);
 		update();
 		othello.ai.printMap(map);
+		setTimeout(() => {
+			othello.mePlay = !othello.mePlay;
+			param.mePlay(othello.mePlay);
+		}, 200);
 	};
 
-	othello.AiGo = function() {
+    othello.AiGo = function () {
+        console.clear();
 		aiRun();
 	};
 
@@ -256,7 +261,7 @@ function Zobrist() {
 	};
 }
 
-function OthelloOnline(signalConnection) {
+function OthelloOnline(signalConnection, mePlayEvent) {
 	var othello = this;
 	othello.ai = new AI(othello);
 	othello.board = new Chessboard();
@@ -268,7 +273,9 @@ function OthelloOnline(signalConnection) {
 	var zobrist = new Zobrist();
 
 	othello.aiSide = 0;
-
+	othello.getHistory = function() {
+		return history;
+	};
 	othello.play = function() {
 		if (aiRuning) return;
 		console.clear();
@@ -300,7 +307,7 @@ function OthelloOnline(signalConnection) {
 		othello.board.update(map, othello.mePlay);
 		othello.game.owner.point = map.black;
 		othello.game.opponent.point = map.white;
-
+		history.push(map);
 		if (map.space == 0 || (map.nextNum == 0 && map.prevNum == 0)) {
 			setTimeout(gameOver, 300);
 			return;
@@ -427,7 +434,7 @@ function OthelloOnline(signalConnection) {
 	};
 
 	othello.goChess = function(n) {
-		history.push(map);
+		//history.push(map);
 		othello.connection.invoke('Play', othello.game.gameId, n);
 		othello.mePlay = false;
 		othello.go(n);
@@ -442,6 +449,10 @@ function OthelloOnline(signalConnection) {
 		map.newRev = rev;
 		map.newPos = n;
 		update();
+		setTimeout(() => {
+			othello.mePlay = !othello.mePlay;
+			mePlayEvent(othello.mePlay);
+		}, 200);
 	};
 
 	othello.AiGo = function() {

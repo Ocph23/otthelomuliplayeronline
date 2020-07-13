@@ -1,0 +1,24 @@
+<div class="admin-title">
+    <h3>Aturan Main</h3>
+    <hr />
+</div>
+
+<ul class="list-unstyled">
+
+    <li class="media" ng-repeat="item in datas">
+        <label>{{$index+1}}. </label>
+        <div class="media-body">
+            {{item.keterangan}}
+        </div>
+    </li>
+</ul>
+
+<style>
+    .media {
+        margin-top: 20px;
+    }
+
+    label {
+        width: 20px;
+    }
+</style>

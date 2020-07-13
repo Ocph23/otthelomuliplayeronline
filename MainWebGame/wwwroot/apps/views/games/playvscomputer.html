@@ -25,12 +25,12 @@
     <div style="--aspect-ratio:1/1;">
         <div id="chessboard"></div>
     </div>
-    <div class="bottom-menu">
-        <button id="play" ng-click="resign()" class="button">Menyerah</button>
+    <div class="bottom-menu" style="margin: 5px;">
+        <button id="play" ng-click="resign()" class="btn btn-danger">Menyerah</button>
         <!--div id="back" class="button">Retract</div-->
-        <button id="2d3d" class="button">3D</button>
-        <button id="ai" ng-disabled="!myPlay" class="button" ng-click="AiPlay()">AI</button>
-        <button id="btnHistory" class="button" data-toggle="modal" data-target="#history"
+        <button id="2d3d" class="btn btn-primary">3D</button>
+        <button id="ai" ng-disabled="!mePlay" class="btn btn-warning" ng-click="AiPlay()">Solusi</button>
+        <button id="btnHistory" class="btn btn-info" data-toggle="modal" data-target="#history"
             ng-click="showHistory()">History</button>
         <!--div-- id="explain" class="button">About</!--div-->
     </div>
@@ -42,17 +42,9 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div id="vsCompOption" class="modal-body" style="background-color: rgb(63, 102, 102);">
-
                 <h5>Main Pertama</h5>
                 <input type="radio" ng-model="model.pion" value="1" name="side"><span>Pemain</span>
                 <input type="radio" ng-model="model.pion" value="-1" name="side"><span>Computer</span><br />
-
-                <h5>Tingkat Kesulitan</h5>
-                <input type="radio" ng-model="model.level" value="1" name="level"><span>Mudah</span><br />
-                <input type="radio" ng-model="model.level" value="2" name="level"
-                    checked="checked"><span>Sedang</span><br />
-                <input type="radio" ng-model="model.level" value="3" name="level"><span>Sulit</span><br />
-                <input type="radio" ng-model="model.level" value="4" name="level"><span>Sangat Sulit</span><br />
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="cancel()">Batal</button>
@@ -75,6 +67,17 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
             </div>
         </div>
-
     </div>
 </div>
+
+
+
+<style>
+    #ai:disabled {
+        background-color: rgb(190, 188, 188);
+    }
+
+    .btn {
+        margin: 2px;
+    }
+</style>

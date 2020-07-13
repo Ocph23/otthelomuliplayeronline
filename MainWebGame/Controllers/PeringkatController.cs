@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.PortableExecutable;
@@ -45,11 +46,33 @@ namespace MainWebGame.Controllers {
             }
         }
 
+        // [HttpGet]
+        // [Route ("api/[controller]/[action]")]
+        // public async Task<IActionResult> GetById (string userId) {
+        //     try {
+        //         var tantangan = _scoreContext.Tantangan.ToList ();
+        //         var data = tantangan.Where (x => x.UserId == userId || x.LawanId == userId);
+        //         var results = from a in data select new PlayerScore {
+        //             Tanggal = a.Tanggal,
+        //             Score = a.UserId == userId ? a.UserScore : a.LawanScore
+        //         };
+
+        //         var groups = results.GroupBy (x => new { x.Tanggal.Month, x.Tanggal.Year });
+
+        //         return Ok (groups);
+        //     } catch (System.Exception ex) {
+
+        //         return BadRequest (ex.Message);
+        //     }
+        // }
+
     }
 
     public class PlayerScore {
         public string Id { get; set; }
         public string PlayerName { get; set; }
         public int Score { get; set; }
+        public DateTime Tanggal { get; set; }
+        public bool Win { get; internal set; }
     }
 }

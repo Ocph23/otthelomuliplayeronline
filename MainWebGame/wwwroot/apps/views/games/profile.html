@@ -1,0 +1,51 @@
+<div class="container profile">
+    <div class="admin-title">
+        <h3>Profile</h3>
+        <hr />
+    </div>
+
+    <div class="chart">
+        <canvas id="myChart" width="300"></canvas>
+    </div>
+
+    <div id="info" class="list-group" ng-show="resume">
+        <a href="#" class="list-group-item list-group-item-action active">
+            INFO DASAR
+        </a>
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Total Skor
+                <span class="badge badge-primary badge-pill">{{resume.score}}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Peringkat
+                <span class="badge badge-primary badge-pill">{{resume.rank}}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Total Menang
+                <span class="badge badge-primary badge-pill">{{resume.win}}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Total Kalah
+                <span class="badge badge-primary badge-pill">{{resume.games-resume.win}}</span>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+<style>
+    #info {
+        width: 80%;
+    }
+
+    .chart {
+        width: 80%;
+        margin-bottom: 50px;
+    }
+
+    li {
+        color: #007bff;
+    }
+</style>
