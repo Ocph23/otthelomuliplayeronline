@@ -15,10 +15,11 @@ function Othello(param) {
 		return history;
 	};
 
-	othello.play = function() {
+    othello.play = function () {
+      
 		if (aiRuning) return;
 		console.clear();
-
+       
 		map = [];
 		for (var i = 0; i < 64; i++) map[i] = 0;
 		map[28] = map[35] = 1;
@@ -37,8 +38,9 @@ function Othello(param) {
 		map.prevNum = 0;
 		map.key = [ 0, 0 ];
 		history = [];
-		update();
-		othello.ai.printMap(map);
+        update();
+        othello.ai.printMap(map);
+      
 	};
 
 	function update() {
@@ -58,10 +60,13 @@ function Othello(param) {
 			setTimeout(update, 300);
 			return;
 		}
-		if (aiAuto) {
-			aiRuning = true;
-			setTimeout(aiRun, 300);
-		}
+        if (aiAuto) {
+            aiRuning = true;
+            param.mePlay(false);
+            setTimeout(aiRun, 300);
+        } else {
+            param.mePlay(true);
+        }
 	}
 
 	function aiRun() {
@@ -136,7 +141,8 @@ function Othello(param) {
 				m.next[fi] = ta;
 				m.nextIndex.push(fi);
 			}
-		}
+        }
+        m.nextIndex.sort(function (a, b) { return a - b });
 		m.nextNum = m.nextIndex.length;
 	};
 
@@ -200,10 +206,10 @@ function Othello(param) {
 		// console.log(map.key);
 		update();
 		othello.ai.printMap(map);
-		setTimeout(() => {
+		/*setTimeout(() => {
 			othello.mePlay = !othello.mePlay;
 			param.mePlay(othello.mePlay);
-		}, 200);
+		}, 200);*/
 	};
 
     othello.AiGo = function () {
@@ -278,8 +284,6 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 	};
 	othello.play = function() {
 		if (aiRuning) return;
-		console.clear();
-
 		map = [];
 		for (var i = 0; i < 64; i++) map[i] = 0;
 		map[28] = map[35] = 1;
@@ -321,6 +325,8 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 		// 	aiRuning = true;
 		// 	setTimeout(aiRun, 300);
 		// }
+
+        othello.connection.invoke('UpdateGame', othello.game);
 	}
 
 	function aiRun() {
@@ -389,8 +395,11 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 				m.next[fi] = ta;
 				m.nextIndex.push(fi);
 			}
-		}
-		m.nextNum = m.nextIndex.length;
+        }
+
+     
+        m.nextNum = m.nextIndex.length;
+     
 	};
 
 	othello.pass = function(m) {

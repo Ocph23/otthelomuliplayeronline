@@ -38,6 +38,26 @@ namespace MainWebGame {
             }
         }
 
+
+
+        public async Task RejectInvite(string userId)
+        {
+            try
+            {
+                await Task.Delay(10);
+                var myname = Context.User.Identity.Name;
+                var myConnection = connections.Where(x => x.UserName == myname).FirstOrDefault();
+                var oppConnection = connections.Where(x => x.UserId == userId).FirstOrDefault();
+                await Clients.Client(oppConnection.ConnectionId).SendAsync("OnRejectInvite", myConnection.UserId);
+
+            }
+            catch (System.Exception ex)
+            {
+
+                await Error(400, ex.Message);
+            }
+        }
+
         public async Task WaitResponse () {
             await Task.Delay (10);
         }
@@ -95,12 +115,18 @@ namespace MainWebGame {
         }
 
         public async Task GameOver (Game game) {
+           
             var name = Context.User.Identity.Name;
             if (game != null)
                 Games.Remove (game);
-            await Task.Delay (100);
             var userWin = game.Owner.PlayerName;
 
+            var ownerConnection = connections.Where(x => x.UserId == game.Owner.UserId).FirstOrDefault();
+            ownerConnection.Playing = false;
+            var oppConnection = connections.Where(x => x.UserId == game.Opponent.UserId).FirstOrDefault();
+            oppConnection.Playing = false;
+
+            await Task.Delay(300);
             var tantangan = new Tantangan {
                 UserId = game.Owner.UserId, LawanId = game.Opponent.UserId, Tanggal = game.Tanggal,
                 UserScore = game.Owner.Point, LawanScore = game.Opponent.Point
@@ -111,6 +137,7 @@ namespace MainWebGame {
         }
 
         public async Task Resign () {
+            await Task.Delay(300);
             var name = Context.User.Identity.Name;
             var game = Games.Where (x => x.Owner.UserName == name || x.Opponent.UserName == name).FirstOrDefault ();
             int resign = 1;
@@ -128,6 +155,18 @@ namespace MainWebGame {
             }
         }
 
+
+        public async Task UpdateGame(Game game)
+        {
+            await Task.Delay(300);
+            var savedgame = Games.Where(x => x.GameId == game.GameId).FirstOrDefault();
+            if (savedgame != null)
+            {
+                savedgame.Opponent.Point = game.Opponent.Point;
+                savedgame.Owner.Point = game.Owner.Point;
+            }
+        }
+
         //users Connections
         public override async Task OnConnectedAsync () {
             var userDb = await _userManager.GetUserAsync (Context.User);
@@ -137,13 +176,6 @@ namespace MainWebGame {
                 user.ConnectionId = Context.ConnectionId;
             } else {
                 user = new UserConnection { Photo = userDb.Photo, ConnectionId = Context.ConnectionId, UserName = userDb.UserName, PlayerName = userDb.PlayerName, UserId = userDb.Id };
-                // user.Score = _scoreContext.Scores.Where (x => x.UserId == userDb.Id).FirstOrDefault ();
-                // if (user.Score == null) {
-                //     user.Score = new ScoreModel { Lost = 0, Score = 0, UserId = userDb.Id, Win = 0 };
-                //     _scoreContext.Add (user.Score);
-                //     _scoreContext.SaveChanges ();
-                // }
-
                 connections.Add (user);
             }
 

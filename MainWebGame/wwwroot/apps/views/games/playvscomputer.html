@@ -43,8 +43,14 @@
         <div class="modal-content">
             <div id="vsCompOption" class="modal-body" style="background-color: rgb(63, 102, 102);">
                 <h5>Main Pertama</h5>
-                <input type="radio" ng-model="model.pion" value="1" name="side"><span>Pemain</span>
-                <input type="radio" ng-model="model.pion" value="-1" name="side"><span>Computer</span><br />
+                <div style="margin-left:30px">
+                    <input type="radio" ng-model="model.pion" value="1" name="side"><span>Pemain</span>
+                </div>
+                <div style="margin-left:30px">
+                    <input type="radio" ng-model="model.pion" value="-1" name="side"><span>Computer</span><br />
+                </div>
+             
+              
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="cancel()">Batal</button>

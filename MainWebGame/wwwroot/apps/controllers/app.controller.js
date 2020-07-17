@@ -95,7 +95,12 @@ function gamePlayController($scope, GameService, $state, $stateParams) {
 		}, 500);
 	} else {
 		$state.go('game-home');
-	}
+    }
+
+    $scope.resign = () => {
+        GameService.resign();
+        $state.go('game-home');
+    };
 
     $scope.AiPlay = () => {
      
@@ -126,10 +131,12 @@ function gameVsComputerController($scope, $state, GameService, $state) {
 	$scope.model = { pion: '1', level: '2' };
 	$('#exampleModal').modal('show');
 
-	$scope.changeMePlay = (data) => {
-		$scope.$apply((x) => {
-			$scope.mePlay = data;
-		});
+    $scope.changeMePlay = (data) => {
+        setTimeout(() => {
+            $scope.$apply((x) => {
+                $scope.mePlay = data;
+            });
+        });
 	};
 
 	$scope.model = {};

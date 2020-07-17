@@ -25,7 +25,9 @@ function PlayerService($q, message, $state) {
 		var player = service.players.find((x) => x.userId == userId);
 		message.dialog(player.playerName + ' Mengajak Anda Untuk Bermain', 'Terima', 'Tolak').then((x) => {
 			service.connection.invoke('Join', userId);
-		});
+        }, err => {
+            service.connection.invoke('RejectInvite', userId);
+        });
 	});
 	service.connection.on('OnStart', function(game) {
 		$state.go('game-play', { data: game });
@@ -128,8 +130,7 @@ function GameService($http, PlayerService, $state, $q) {
 		othe.aiRuning = true;
 		othe.board.create();
 		othe.pion = params.pion;
-		othe.mePlay = true;
-		service.mePlay = othe.getMePlay;
+		
 		if (othe.pion == -1) {
 			var chessB = document.getElementById('chessboard');
 			chessB.className = 'opponent';
@@ -139,12 +140,12 @@ function GameService($http, PlayerService, $state, $q) {
 
 		othe.aiSide = othe.pion == 1 ? -1 : 1;
 
-		if (othe.aiSide) {
-			othe.mePlay = false;
-		} else {
-			othe.mePlay = true;
+        if (othe.aiSide) {
+            othe.mePlay = false;
+        } else {
+            othe.mePlay = true;
 		}
-
+        service.mePlay = othe.getMePlay;
 		othe.ai.calculateTime = [ 20, 100, 500, 2000, 5000, 10000, 20000 ][params.level - 1];
 		othe.ai.outcomeDepth = 2; // [ 2, 3, 4, 5, 6, 7, 8 ][params.level - 1];
 		othe.play();

@@ -9,7 +9,7 @@
         <div class="user-name">{{$ctrl.player.playerName}}</div>
     </div>
     <div class="user-action">
-        <button ng-show="!$ctrl.player.playing" ng-click="play()">{{Title}}</button>
-        <label ng-show="$ctrl.player.playing">Main</label>
+        <button class="btn btn-warning" ng-show="!$ctrl.player.playing" ng-click="play()">{{Title}}</button>
+        <label ng-show="$ctrl.player.playing">Sedang Bermain</label>
     </div>
 </div>

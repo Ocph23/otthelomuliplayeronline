@@ -8,7 +8,21 @@ angular.module('app.useronline.conponent', []).component('useronline', {
 		$scope.play = () => {
 			//$state.go('game-play', { player: $scope.$ctrl.player });
 
-			PlayerService.connection.invoke('InviteOpponent', $scope.$ctrl.player.userId);
+            PlayerService.connection.invoke('InviteOpponent', $scope.$ctrl.player.userId);
+
+            //OnRejectInvite
+            PlayerService.connection.on("OnRejectInvite", param => {
+                if ($scope.$ctrl.player.userId == param) {
+                    $scope.$apply(x => {
+                        $scope.Title = 'Ditolak';
+                        setTimeout(x => {
+                            $scope.$apply(x => {
+                                $scope.Title = 'Invite';
+                            });
+                        }, 2000);
+                    });
+                }
+            });
 			$scope.Title = 'Tunggu ....';
 		};
 	},
