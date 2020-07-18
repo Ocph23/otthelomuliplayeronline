@@ -144,7 +144,36 @@ function Othello(param) {
         }
         m.nextIndex.sort(function (a, b) { return a - b });
 		m.nextNum = m.nextIndex.length;
-	};
+    };
+
+    othello.findLocationX = function (m) {
+        function is(i, j) {
+            var lk = 0;
+            while ((i = othello.dire(i, j)) != 64 && m[i] == m.side) {
+                ta[la++] = i;
+                lk++;
+            }
+            if (i == 64 || m[i] != -m.side) la -= lk;
+        }
+        m.nextIndex = [];
+        m.next = [];
+        var hist = othello.ai.history[m.side == 1 ? 0 : 1][m.space];
+        for (var i = 0; i < 60; i++) {
+            var fi = hist[i];
+            if (!m.frontier[fi]) continue;
+            var ta = [],
+                la = 0;
+            for (var j = 0; j < 8; j++) is(fi, j);
+            if (la > 0) {
+                if (la != ta.length) ta = ta.slice(0, la);
+                m.next[fi] = ta;
+                m.nextIndex.push(fi);
+            }
+        }
+        m.nextIndex.sort(function (a, b) { return a - b });
+        m.nextNum = m.nextIndex.length;
+    };
+
 
 	othello.pass = function(m) {
 		m.side = -m.side;
@@ -152,7 +181,7 @@ function Othello(param) {
 		zobrist.swap(m.key);
 	};
 
-	othello.newMap = function(m, n) {
+    othello.newMap = function (m, n) {
 		var nm = m.slice(0);
 		nm[n] = m.side;
 
@@ -184,7 +213,11 @@ function Othello(param) {
 		nm.prevNum = m.nextNum;
 		zobrist.swap(nm.key);
 		return nm;
-	};
+    };
+
+
+    
+
 
 	othello.goChess = function(n) {
 		//history.push(map);

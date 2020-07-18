@@ -127,12 +127,13 @@ function AI(othe) {
 	}
 
     function evaluation(m) {
-        var evaluateFor = (m.side == 1 ? ' O ' : ' X ');
+        var evaluateFor = (m.side == 1 ? ' X ' : ' O ');
         console.log('Evaluate Map For ' + evaluateFor);
 		oo.printMap(m);
 		var corner = 0,
 			steady = 0,
-			uk = {};
+            uk = {};
+
 		for (var i = 0, v, l = rnd.length; (v = rnd[i]), i < l; i++) {
 			if (m[v.s] == 0) {
 				corner += m[v.a] * -3;
@@ -143,34 +144,56 @@ function AI(othe) {
 			corner += m[v.s] * 75;
 		}
 
-		var frontier = 0;
-		var frontierX = 0;
-		var frontierO = 0;
-		for (var i = 9; i <= 54; i += (i & 7) == 6 ? 3 : 1) {
-			if (m[i] == 0) continue;
-			for (var j = 0; j < 8; j++)
-				if (m[othe.dire(i, j)] == 0) {
-					if (m[i] == 1) {
-						frontierX += 1;
-					} else {
-						frontierO += 1;
-					}
-					frontier -= m[i];
-					break;
-				}
-		}
+		//var frontier = 0;
 
-		var mobility = m.nextNum;
-		var rv = corner + frontier + (m.nextNum - m.prevNum);
-		console.log('Frontier =' + frontier);
+        last = 0;
+        var ff = 0;
+        dataBoards.forEach((element) => {
+            m.slice(last, element).map((x) => {
+               // row += x == 0 ? '   |' : x == -1 ? ' O |' : ' X |';
+            });
+           // row += '\r\n---------------------------------\r\n';
+            last = element;
+        });
+
+
+
+        var frontier = 0;
+        for (var i = 9; i <= 54; i += (i & 7) == 6 ? 3 : 1) {
+            if (m[i] != m.side)
+                continue;
+            for (var j = 0; j < 8; j++) {
+                var aa = othe.dire(i, j);
+                if (m[othe.dire(i, j)] == 0) {
+
+                    if (m.side == m[i]) {
+                        frontier += 1;
+                    }
+
+
+                    //frontier -= m[i];
+                    break;
+                }
+            }
+        }
+
+
+        var fr = frontier// evaluateFor == "X" ? frontierX : frontierO;
+
+        console.log('Frontier =' + fr);
+        console.log('Mobility  =' + m.nextNum, " - ", m.nextIndex);
         console.log('Corner  =' + corner);
-        console.log('Mobility' + evaluateFor + '(' + m.nextNum + "-" + m.prevNum + ')  =' + (m.nextNum - m.prevNum));
+        console.log('Mobility - Fronteir + Corner  =' , m.nextNum - fr + corner);
+
+        var rv = m.nextNum - fr + corner;
 		//oo.printMap(m);
-        console.log('Analisa For : ' + m.side + ' value = ' + rv + '\r\n\r\n');
+        console.log('Analisa For : ' + evaluateFor + ' value = ' + rv + '\r\n\r\n');
         if (rv > 50) {
             console.log('%c Oh my heavens! ', 'background: #222; color: #bada55',
                 'more text');
         }
+
+       
 		return rv;
 	}
 
@@ -182,40 +205,50 @@ function AI(othe) {
 
     Max = Infinity;
     Min = -Infinity;
-    maxDeep = 3;
+    maxDeep = 4;
     aiHistory = [];
 
-    function MinMax(map, deep, isMax, alpha, beta) {
+    function MinMax(map, deep, isMax, alpha, beta, F) {
         othe.findLocation(map);
-        
         if (deep == maxDepth) {
             var e = evaluation(map);
-            return e;
+            const returnedTarget = Object.assign([], map);
+            returnedTarget.side = map.side == 1 ? -1 : 1;
+            othe.findLocation(returnedTarget);
+            var f = evaluation(returnedTarget);
+            console.log("Total Evaluasi =", e - f)
+
+            var result = map.side == -1 ? e - f : f - e;
+            return { value: result };
         }
 
-      
 
         if (isMax) {
-            best = Min;
+            var best = { value: Min};
             for (var i = 0; i < map.nextIndex.length; i++) {
                 var newMap = othe.newMap(map, map.nextIndex[i]);
                 newMap.MapKey = map.nextIndex[i];
+
+                console.log("V=", best, " |alpha=", alpha, " |beta=", beta, " |Key=", F)
                 oo.printMap(newMap);
-                console.log("V=", best, " |alpha=", alpha, " |betha=", beta)
+               
                 val = MinMax(newMap, deep + 1, false, alpha, beta);
-                best = Math.max(best, val);
-                alpha = Math.max(alpha, best);
 
+              /*  if (best < val) {
+                    aiHistory.push({ a: val, key: newMap.MapKey, isMax: false });
+                    F = newMap.MapKey;
+                }*/
 
+                best = best.value >= val.value ? best : val;
+                alpha = alpha.value >= best.value ? alpha : best;
 
-                console.log("V=", best, " - ", newMap.MapKey);
-                if (beta <= alpha) {
+                best.Key = newMap.MapKey;
+
+                console.log("V=", best, " - ", F);
+                if (beta.value <= alpha.value) {
                     console.log("Prune", val)
                     break;
-                } else {
-                    aiHistory.push({ a: best, key: map.MapKey, isMax: false });
-                }
-
+                } 
                
             }
 
@@ -223,27 +256,27 @@ function AI(othe) {
 
 
         } else {
-            best = Max;
+           var best = { value: Max };
 
             for (var i = 0; i < map.nextIndex.length; i++) {
                 var newMap = othe.newMap(map, map.nextIndex[i]);
                 newMap.MapKey = map.nextIndex[i];
+                console.log("V=", best, " |alpha=", alpha, " |beta=", beta, " |Key=", F )
                 oo.printMap(newMap);
-                console.log("V=", best, " |alpha=", alpha, " |betha=", beta)
-                val = MinMax(newMap,deep + 1, true, alpha, beta);
-                best = Math.min(best, val);
-                beta = Math.min(beta, best);
+                val = MinMax(newMap, deep + 1, true, alpha, beta);
+               /* if (val < best) {
+                    aiHistory.push({ a: val, key: newMap.MapKey, isMax: false });
+                }
+*/
+                best.Key = newMap.MapKey;
+                best = best.value <= val.value ? best : val;
+                beta= beta.value <= best.value ? beta : best;
 
-                console.log("V=", best, " - ", newMap.MapKey);
-              
-                if (beta <= alpha) {
+                console.log("V=", best, " - ", F);
+                if (beta.value <= alpha.value) {
                     console.log("Prune", val)
                     break;
-                } else {
-                    aiHistory.push({ a: best, key: map.MapKey, isMax: true });
                 }
-
-               
             }
 
             return best;
@@ -260,7 +293,9 @@ function AI(othe) {
         oo.printMap(m);
         m.MapKey = null;
 
-        var best = MinMax(m, 0, false, -Infinity, Infinity);
+        var F = null;
+
+        var best = MinMax(m, 0, true, { value: -Infinity }, { value: -Infinity}, F);
 
 
 
@@ -283,8 +318,7 @@ function AI(othe) {
             othe.findLocation(newArray);
             oo.printMap(newArray);
         })*/
-        var a = aiHistory[aiHistory.length - 1];;
-        return a.key;
+        return best.Key;
 
 
 	};
