@@ -8,7 +8,10 @@ angular
 function adminController($scope, AuthService) {
 	AuthService.profile().then((x) => {
 		if (x.role.toLowerCase() != 'admin') $state.go('login');
-	});
+    });
+    $scope.logoff = () => {
+        AuthService.logOff();
+    }
 }
 
 function peraturanController($scope, PeraturanService, message) {

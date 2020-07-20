@@ -1,20 +1,40 @@
-<div ng-app="admin" class="main">
-    <div class="leftSide">
-        <ul>
-            <li><a ng-click="">Selamat Datang</a></li>
-            <li> <a ui-sref="admin-home" ui-sref-active="active"><i class="fa fa-home fa-2x"></i> Beranda</a></li>
-            <li><a ui-sref="admin-peraturan"><i class="fa fa-cogs fa-2x"></i> Data Aturan</a></li>
-            <li><a ui-sref="admin-pemain"><i class="fa fa-user fa-2x"></i> Data Pemain</a></li>
-            <li><a ui-sref="admin-tantangan"><i class="fa fa-trophy fa-2x"></i> Data Tantangan</a></li>
-            <li><a ui-sref="logout()"><i class="fa fa-power-off fa-2x"></i>Logout</a></li>
-        </ul>
-    </div>
-    <div class="mainSide">
-        <ui-view></ui-view>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
+        <div class="container">
+            <a class="navbar-brand">Game Othello</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse">
+            
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <div class="main">
+        <div class="leftSide">
+            <ul>
+                <li><a ng-click="">Selamat Datang</a></li>
+                <li> <a ui-sref="admin-home" ui-sref-active="active"><i class="fa fa-home fa-2x"></i> Beranda</a></li>
+                <li><a ui-sref="admin-peraturan"><i class="fa fa-cogs fa-2x"></i> Data Aturan</a></li>
+                <li><a ui-sref="admin-pemain"><i class="fa fa-user fa-2x"></i> Data Pemain</a></li>
+                <li><a ui-sref="admin-tantangan"><i class="fa fa-trophy fa-2x"></i> Data Tantangan</a></li>
+                <li><a ng-click="logoff()" href=""><i class="fa fa-power-off fa-2x"></i>Logout</a></li>
+            </ul>
+        </div>
+        <div class="mainSide">
+            <ui-view></ui-view>
+        </div>
     </div>
 </div>
-
 <style>
+      header {
+        width: 100%;
+        color: black;
+        background: white;
+    }
     i {
         width: 32px;
         height: 32px;

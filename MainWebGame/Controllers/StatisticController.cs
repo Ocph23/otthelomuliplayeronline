@@ -65,7 +65,7 @@ namespace MainWebGame.Controllers {
                     Score = a.UserId == item.IdUser?a.UserScore : a.LawanScore
                 };
 
-                if (item.PlayerName.ToLower () != "admin")
+                if (item.PlayerName!=null && item.PlayerName.ToLower () != "admin")
                     listResult.Add (new PlayerScore { Id = item.IdUser, PlayerName = item.PlayerName, Score = results.Sum (x => x.Score) });
             }
 

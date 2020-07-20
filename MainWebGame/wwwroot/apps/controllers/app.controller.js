@@ -1,5 +1,6 @@
 angular
 	.module('app.controller', [])
+	.controller('gameController', gameController)
 	.controller('gameHomeController', gameHomeController)
 	.controller('peringkatController', peringkatController)
 	.controller('profileController', profileController)
@@ -7,7 +8,29 @@ angular
 	.controller('gameVsComputerController', gameVsComputerController)
 	.controller('gamePlayController', gamePlayController);
 
+
+function gameController($scope, AuthService) {
+    $scope.profile = {};
+    AuthService.profile().then(
+        (x) => {
+            if (x.role.toLowerCase() != 'player') {
+                $state.go('login');
+            }
+            $scope.profile = x;
+            $scope.photos = x.photo;
+        },
+        (err) => {
+            $state.go('login');
+        }
+    );
+    $scope.logoff = () => {
+        AuthService.logOff();
+    }
+}
+
 function gameHomeController($scope, PlayerService, $state, message, AuthService) {
+   
+
 	AuthService.profile().then(
 		(x) => {
 			if (x.role.toLowerCase() != 'player') {
@@ -230,41 +253,55 @@ function aturanController($scope, PlayerService, PeraturanService) {
 	});
 }
 
-function profileController($scope, PlayerService, PeraturanService) {
-	$scope.userId = PlayerService.getMyUserId();
-	$scope.playerService = PlayerService;
+function profileController($scope, PlayerService, PeraturanService, AuthService) {
+	
+    $scope.playerService = PlayerService;
 
-	PeraturanService.getStatistik($scope.userId).then((x) => {
-		$scope.datas = x;
-		$scope.resume = x.resume;
-		var labels = [];
-		var datas = [];
-		x.data.forEach((element) => {
-			labels.push(element.label);
-			datas.push(element.score);
-		});
+    AuthService.profile().then(
+        (x) => {
+            if (x.role.toLowerCase() != 'player') {
+                $state.go('login');
+            }
+            PeraturanService.getStatistik(x.idUser).then((x) => {
+                $scope.datas = x;
+                $scope.resume = x.resume;
+                var labels = [];
+                var datas = [];
+                x.data.forEach((element) => {
+                    labels.push(element.label);
+                    datas.push(element.score);
+                });
 
-		var ctx = document.getElementById('myChart').getContext('2d');
-		var chart = new Chart(ctx, {
-			// The type of chart we want to create
-			type: 'line',
+                var ctx = document.getElementById('myChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    // The type of chart we want to create
+                    type: 'line',
 
-			// The data for our dataset
-			data: {
-				labels: labels,
-				datasets: [
-					{
-						label: 'Score',
-						borderColor: 'rgb(255, 99, 132)',
-						data: datas
-					}
-				]
-			},
+                    // The data for our dataset
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Score',
+                                borderColor: 'rgb(255, 99, 132)',
+                                data: datas
+                            }
+                        ]
+                    },
 
-			// Configuration options go here
-			options: {}
-		});
-	});
+                    // Configuration options go here
+                    options: {}
+                });
+            });
+        },
+        (err) => {
+            $state.go('login');
+        }
+    );
+
+
+
+	
 }
 
 function generate(historyMain, id, m) {

@@ -2,7 +2,8 @@ angular.module('app.router', [ 'ui.router', 'admin.router' ]).config(function($s
 	$urlRouterProvider.otherwise('/game/home');
 	$stateProvider
 		.state('player', {
-			url: '/game',
+            url: '/game',
+            controller: 'gameController',
 			templateUrl: './apps/views/games/index.html'
 		})
 		.state('player-home', {

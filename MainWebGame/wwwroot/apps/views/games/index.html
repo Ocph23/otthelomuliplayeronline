@@ -1,1 +1,40 @@
-<ui-view></ui-view>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
+        <div class="container">
+            <a class="navbar-brand">Game Othello</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" ui-sref="player-home">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" ui-sref="game-aturan">Aturan</a>
+                    </li>
+                </ul>
+                <span class="navbar-text">
+                    <a class="nav-link" ui-sref="game-profile"> {{profile.playerName}}</a>
+                </span>
+                <span>
+                    <a class="nav-link" href="" ng-click="logoff()">Log Out</a>
+                </span>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+    <ui-view></ui-view>
+</div>
+
+
+
+<style>
+    header {
+        width: 100%;
+        color: black;
+        background: white;
+    }
+</style>
