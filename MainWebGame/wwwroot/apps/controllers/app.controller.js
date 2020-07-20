@@ -144,11 +144,12 @@ function gamePlayController($scope, GameService, $state, $stateParams, AuthServi
 }
 
 function gameVsComputerController($scope, $state, GameService, $state, AuthService) {
+    $scope.model = {};
+   
 	AuthService.profile().then((x) => {
 		$scope.profile = x;
 		$scope.photos = x.photo;
 		$scope.userId = $scope.profile.IdUser;
-		var playerName = $scope.profile.playerName;
 		$scope.model = { pion: '1', level: '2' };
 		$('#exampleModal').modal('show');
 	});
@@ -161,17 +162,18 @@ function gameVsComputerController($scope, $state, GameService, $state, AuthServi
 		});
 	};
 
-	$scope.model = {};
-	$scope.model.mePlay = $scope.changeMePlay;
+	
 
 	$scope.start = (params) => {
 		if (params.pion == 1) {
-			$scope.side1 = playerName;
+            $scope.side1 = $scope.profile.playerName;
 			$scope.side2 = 'Computer';
 		} else {
-			$scope.side2 = playerName;
+            $scope.side2 = $scope.profile.playerName;
 			$scope.side1 = 'Computer';
-		}
+        }
+        params.mePlay = $scope.changeMePlay;
+        
 		GameService.startVsComputer(params);
 		$scope.otthe = GameService.getOtthelo();
 	};
