@@ -15,8 +15,7 @@ function AuthService($http, $q, StorageService, $state, helperServices, message)
 		getHeader: getHeader,
 		url: service.url,
 		profile: profile,
-		registerPembeli: registerPembeli,
-		registerPenjual: registerPenjual,
+		register: register,
 		getToken: getToken,
 		updatePhotoProfile: updatePhotoProfile
 	};
@@ -53,20 +52,25 @@ function AuthService($http, $q, StorageService, $state, helperServices, message)
 
 	function profile() {
 		var def = $q.defer();
-		$http({
-			method: 'get',
-			url: helperServices.url + controller + '/profile',
-			headers: getHeader()
-		}).then(
-			(res) => {
-				StorageService.addObject('profile', res.data);
-				def.resolve(res.data);
-			},
-			(err) => {
-				message.error(err);
-				def.reject();
-			}
-		);
+		var result = StorageService.getObject('user');
+		if (result != null) {
+			def.resolve(result);
+		} else {
+			$http({
+				method: 'get',
+				url: helperServices.url + controller + '/profile',
+				headers: getHeader()
+			}).then(
+				(res) => {
+					StorageService.addObject('profile', res.data);
+					def.resolve(res.data);
+				},
+				(err) => {
+					message.error(err);
+					def.reject();
+				}
+			);
+		}
 
 		return def.promise;
 	}
@@ -75,7 +79,7 @@ function AuthService($http, $q, StorageService, $state, helperServices, message)
 		var def = $q.defer();
 		$http({
 			method: 'post',
-			url: helperServices.url + controller,
+			url: helperServices.url + controller + '/login',
 			headers: getHeader(),
 			data: user
 		}).then(
@@ -91,36 +95,16 @@ function AuthService($http, $q, StorageService, $state, helperServices, message)
 		return def.promise;
 	}
 
-	function registerPenjual(data) {
+	function register(data) {
 		var def = $q.defer();
 		$http({
 			method: 'post',
-			url: helperServices.url + controller + '/RegisterPenjual',
+			url: helperServices.url + controller + '/register',
 			headers: getHeader(),
 			data: data
 		}).then(
 			(res) => {
-				message.info('Registrasi Berhasil, Periksa Email Anda Untuk Konfirmasi Email');
-				def.resolve(res.data);
-			},
-			(err) => {
-				message.error(err);
-				def.reject();
-			}
-		);
-		return def.promise;
-	}
-
-	function registerPembeli(data) {
-		var def = $q.defer();
-		$http({
-			method: 'post',
-			url: helperServices.url + controller + '/RegisterPembeli',
-			headers: getHeader(),
-			data: data
-		}).then(
-			(res) => {
-				message.info('Registrasi Berhasil, Periksa Email Anda Untuk Konfirmasi Email');
+				message.info('Registrasi Berhasil, Silahkan Login');
 				def.resolve(res.data);
 			},
 			(err) => {
@@ -134,10 +118,9 @@ function AuthService($http, $q, StorageService, $state, helperServices, message)
 	function getHeader() {
 		try {
 			if (userIsLogin()) {
-				var token = getToken();
 				return {
 					'Content-Type': 'application/json',
-					Authorization: token
+					Authorization: 'bearer ' + getToken()
 				};
 			}
 			throw new Error('Not Found Token');
@@ -162,7 +145,7 @@ function AuthService($http, $q, StorageService, $state, helperServices, message)
 
 	function getToken() {
 		var result = StorageService.getObject('user');
-		return result.Token;
+		return result == null ? null : result.token;
 	}
 
 	function userIsLogin() {

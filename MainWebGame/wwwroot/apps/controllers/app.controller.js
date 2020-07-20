@@ -1,5 +1,5 @@
 angular
-	.module('app.controller', [ 'account.controller' ])
+	.module('app.controller', [])
 	.controller('gameHomeController', gameHomeController)
 	.controller('peringkatController', peringkatController)
 	.controller('profileController', profileController)
@@ -8,18 +8,29 @@ angular
 	.controller('gamePlayController', gamePlayController);
 
 function gameHomeController($scope, PlayerService, $state, message, AuthService) {
-	AuthService.profile().then((x) => {
-		$scope.profile = x;
-		$scope.photos = x.photo;
-	});
-	var userId = PlayerService.getMyUserId();
-	$scope.userId = PlayerService.getMyUserId();
+	AuthService.profile().then(
+		(x) => {
+			if (x.role.toLowerCase() != 'player') {
+				$state.go('login');
+			}
+			$scope.profile = x;
+			$scope.photos = x.photo;
+			$scope.userId = $scope.profile.idUser;
+			if (!PlayerService.connection.connectionStarted) {
+				PlayerService.start();
+			}
+		},
+		(err) => {
+			$state.go('login');
+		}
+	);
+
 	$scope.playerService = PlayerService;
 
 	PlayerService.connection.on('Users', (players) => {
 		$scope.$apply((x) => {
-			PlayerService.players = players.filter((x) => x.userId != userId);
-			PlayerService.MyAccount = players.find((x) => x.userId == userId);
+			PlayerService.players = players.filter((x) => x.userId != $scope.userId);
+			PlayerService.MyAccount = players.find((x) => x.userId == $scope.userId);
 		});
 	});
 	PlayerService.connection.on('OnOnlinePlayer', (player) => {
@@ -62,10 +73,6 @@ function gameHomeController($scope, PlayerService, $state, message, AuthService)
 		});
 	});
 
-	if (!PlayerService.connection.connectionStarted) {
-		PlayerService.start();
-	}
-
 	$scope.play = () => {
 		$state.go('game-play', { player: PlayerService.MyAccount });
 	};
@@ -79,31 +86,41 @@ function gameHomeController($scope, PlayerService, $state, message, AuthService)
 	};
 }
 
-function gamePlayController($scope, GameService, $state, $stateParams) {
+function gamePlayController($scope, GameService, $state, $stateParams, AuthService) {
+	AuthService.profile().then(
+		(x) => {
+			if (x.role.toLowerCase() != 'player') {
+				$state.go('login');
+			}
+			GameService.MyProfile = x;
+			if ($stateParams.data) {
+				$scope.side1 = $stateParams.data.owner.playerName;
+				$scope.side2 = $stateParams.data.opponent.playerName;
+				setTimeout(() => {
+					$stateParams.data.mePlay = $scope.changeMePlay;
+					GameService.start($stateParams.data);
+				}, 500);
+			} else {
+				$state.go('player-home');
+			}
+		},
+		(err) => {
+			$state.go('login');
+		}
+	);
+
 	$scope.changeMePlay = (data) => {
 		$scope.$apply((x) => {
 			$scope.mePlay = data;
 		});
 	};
 
-	if ($stateParams.data) {
-		$scope.side1 = $stateParams.data.owner.playerName;
-		$scope.side2 = $stateParams.data.opponent.playerName;
-		setTimeout(() => {
-			$stateParams.data.mePlay = $scope.changeMePlay;
-			GameService.start($stateParams.data);
-		}, 500);
-	} else {
-		$state.go('game-home');
-    }
+	$scope.resign = () => {
+		GameService.resign();
+		$state.go('player-home');
+	};
 
-    $scope.resign = () => {
-        GameService.resign();
-        $state.go('game-home');
-    };
-
-    $scope.AiPlay = () => {
-     
+	$scope.AiPlay = () => {
 		GameService.AiPlay();
 	};
 	$scope.showHistory = () => {
@@ -126,17 +143,22 @@ function gamePlayController($scope, GameService, $state, $stateParams) {
 	};
 }
 
-function gameVsComputerController($scope, $state, GameService, $state) {
-	var playerName = document.getElementById('playerName').value;
-	$scope.model = { pion: '1', level: '2' };
-	$('#exampleModal').modal('show');
+function gameVsComputerController($scope, $state, GameService, $state, AuthService) {
+	AuthService.profile().then((x) => {
+		$scope.profile = x;
+		$scope.photos = x.photo;
+		$scope.userId = $scope.profile.IdUser;
+		var playerName = $scope.profile.playerName;
+		$scope.model = { pion: '1', level: '2' };
+		$('#exampleModal').modal('show');
+	});
 
-    $scope.changeMePlay = (data) => {
-        setTimeout(() => {
-            $scope.$apply((x) => {
-                $scope.mePlay = data;
-            });
-        });
+	$scope.changeMePlay = (data) => {
+		setTimeout(() => {
+			$scope.$apply((x) => {
+				$scope.mePlay = data;
+			});
+		});
 	};
 
 	$scope.model = {};
@@ -156,16 +178,16 @@ function gameVsComputerController($scope, $state, GameService, $state) {
 
 	$scope.cancel = () => {
 		setTimeout(() => {
-			$state.go('game-home');
+			$state.go('player-home');
 		}, 500);
 	};
 
-    $scope.AiPlay = () => {
+	$scope.AiPlay = () => {
 		GameService.AiPlay();
 	};
 
 	$scope.resign = () => {
-		$state.go('game-home');
+		$state.go('player-home');
 	};
 
 	$scope.showHistory = () => {

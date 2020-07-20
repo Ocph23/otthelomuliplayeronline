@@ -18,9 +18,9 @@ namespace MainWebGame
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+            .ConfigureWebHostDefaults(webBuilder => {
+                webBuilder.UseWebRoot("wwwroot");
+                webBuilder.UseStartup<Startup>();
+            });
     }
 }

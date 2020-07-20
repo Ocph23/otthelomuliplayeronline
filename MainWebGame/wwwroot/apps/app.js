@@ -1,5 +1,14 @@
 angular
-	.module('app', [ 'swangular', 'app.router', 'app.component', 'app.controller', 'app.service' ])
+	.module('app', [
+		'swangular',
+		'app.router',
+		'admin.router',
+		'app.component',
+		'app.controller',
+		'admin.controller',
+		'account.controller',
+		'app.service'
+	])
 	.config(() => {
 		//or as a Number prototype method:
 		Number.prototype.padLeft = function(n, str) {
@@ -71,14 +80,15 @@ angular
 													method: 'post',
 													url: helperServices.url + '/api/user/photo',
 													headers: AuthService.getHeader(),
-													data: { id: scope.userId, photo: base64String }
+													data: { IdUser: scope.userId, photo: base64String }
 												}).then(
 													(res) => {
-														def.resolve(res.data);
+														//def.resolve(res.data);
+														message.info('Photo Profile Berhasil Diubah');
 													},
 													(err) => {
 														message.error(err);
-														def.reject();
+														//def.reject();
 													}
 												);
 											});

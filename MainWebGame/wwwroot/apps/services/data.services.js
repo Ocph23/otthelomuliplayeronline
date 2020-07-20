@@ -5,11 +5,20 @@ angular
 	.factory('PeraturanService', PeraturanService)
 	.factory('PlayerService', PlayerService);
 
-function PlayerService($q, message, $state) {
+function PlayerService($q, message, $state, AuthService) {
 	var service = {};
 	service.MyUserName = '';
 	service.players = [];
-	service.connection = new signalR.HubConnectionBuilder().withUrl('/gameHub').build();
+	var token = AuthService.getToken();
+	service.connection = new signalR.HubConnectionBuilder()
+		.withUrl('/gameHub', {
+			transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
+			'content-type': 'application/json',
+			accessTokenFactory: () => token
+		})
+		.configureLogging(signalR.LogLevel.Information)
+		.build();
+
 	service.start = () => {
 		service.connection
 			.start()
@@ -23,21 +32,18 @@ function PlayerService($q, message, $state) {
 
 	service.connection.on('OnInvite', function(userId) {
 		var player = service.players.find((x) => x.userId == userId);
-		message.dialog(player.playerName + ' Mengajak Anda Untuk Bermain', 'Terima', 'Tolak').then((x) => {
-			service.connection.invoke('Join', userId);
-        }, err => {
-            service.connection.invoke('RejectInvite', userId);
-        });
+		message.dialog(player.playerName + ' Mengajak Anda Untuk Bermain', 'Terima', 'Tolak').then(
+			(x) => {
+				service.connection.invoke('Join', userId);
+			},
+			(err) => {
+				service.connection.invoke('RejectInvite', userId);
+			}
+		);
 	});
 	service.connection.on('OnStart', function(game) {
 		$state.go('game-play', { data: game });
 	});
-
-	service.getMyUserId = () => {
-		var userId = document.getElementById('userId').value;
-		if (userId) return userId;
-		return null;
-	};
 
 	return service;
 }
@@ -65,7 +71,7 @@ function GameService($http, PlayerService, $state, $q) {
 		othe.game = game;
 		othe.board.create();
 		othe.toDown = othe.goChess;
-		var myid = PlayerService.getMyUserId();
+		var myid = service.MyProfile.idUser;
 		othe.pion = game.owner.userId == myid ? 1 : -1;
 		othe.mePlay = true;
 		service.mePlay = othe.mePlay;
@@ -130,7 +136,7 @@ function GameService($http, PlayerService, $state, $q) {
 		othe.aiRuning = true;
 		othe.board.create();
 		othe.pion = params.pion;
-		
+
 		if (othe.pion == -1) {
 			var chessB = document.getElementById('chessboard');
 			chessB.className = 'opponent';
@@ -140,12 +146,12 @@ function GameService($http, PlayerService, $state, $q) {
 
 		othe.aiSide = othe.pion == 1 ? -1 : 1;
 
-        if (othe.aiSide) {
-            othe.mePlay = false;
-        } else {
-            othe.mePlay = true;
+		if (othe.aiSide) {
+			othe.mePlay = false;
+		} else {
+			othe.mePlay = true;
 		}
-        service.mePlay = othe.getMePlay;
+		service.mePlay = othe.getMePlay;
 		othe.ai.calculateTime = [ 20, 100, 500, 2000, 5000, 10000, 20000 ][params.level - 1];
 		othe.ai.outcomeDepth = 2; // [ 2, 3, 4, 5, 6, 7, 8 ][params.level - 1];
 		othe.play();

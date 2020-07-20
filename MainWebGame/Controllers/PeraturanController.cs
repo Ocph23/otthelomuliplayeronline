@@ -1,56 +1,77 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using MainWebGame.Data;
 using MainWebGame.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace MainWebGame.Controllers {
 
     [ApiController]
     [Route ("api/[controller]")]
     public class PeraturanController : ControllerBase {
-        private ScoreModelContext _scoreContext;
-        private UserManager<ApplicationUser> _userManager;
+        private AppSettings _appSettings;
+        private OcphDbContext db;
 
-        public PeraturanController (ScoreModelContext scoreContext, UserManager<ApplicationUser> userManager) {
-            _scoreContext = scoreContext;
-            _userManager = userManager;
+        public PeraturanController (IOptions<AppSettings> appSettings, OcphDbContext _db) {
+            _appSettings = appSettings.Value;
+            db = _db;
+
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Get () {
-            var result = _scoreContext.Peraturans.ToList ();
+            string userId = User.FindFirst (ClaimTypes.NameIdentifier).Value;
+            await Task.Delay (1);
+            var result = db.Peraturan.Select ().ToList ();
             return Ok (result);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post (PeraturanModel model) {
-            var result = _scoreContext.Peraturans.Add (model);
-            _scoreContext.SaveChanges ();
-            return Ok (model);
+            try {
+                await Task.Delay (1);
+                model.IdPeraturan = db.Peraturan.InsertAndGetLastID (model);
+                return Ok (model);
+            } catch (System.Exception ex) {
+                return BadRequest (ex.Message);
+            }
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> Put (PeraturanModel model) {
-            var result = _scoreContext.Peraturans.Where (x => x.IdPeraturan == model.IdPeraturan).FirstOrDefault ();
-            if (result != null) {
-                result.Keterangan = model.Keterangan;
-                _scoreContext.SaveChanges ();
+            await Task.Delay (1);
+            try {
+                var updated = db.Peraturan.Update (x => new { x.Keterangan }, model, x => x.IdPeraturan == model.IdPeraturan);
+                if (updated) {
+                    return Ok (model);
+                } else {
+                    throw new System.Exception ("Tidak Berhasil DIubah");
+                }
+            } catch (System.Exception ex) {
+                return BadRequest (ex.Message);
             }
-            return Ok (model);
+
         }
 
+        [Authorize]
         [HttpDelete]
         public async Task<IActionResult> Delete (int id) {
-            var result = _scoreContext.Peraturans.Where (x => x.IdPeraturan == id).FirstOrDefault ();
-            if (result != null) {
-                _scoreContext.Peraturans.Remove (result);
-                _scoreContext.SaveChanges ();
+            try {
+                await Task.Delay (1);
+                if (db.Peraturan.Delete (x => x.IdPeraturan == id))
+                    return Ok (true);
+                else {
+                    throw new System.Exception ("Tidak Berhasil Dihapus");
+                }
+            } catch (System.Exception ex) {
+                return BadRequest (ex.Message);
             }
-            return Ok (true);
         }
 
     }

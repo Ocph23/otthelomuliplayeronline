@@ -3,38 +3,39 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using MainWebGame.Data;
 using MainWebGame.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace MainWebGame.Controllers {
 
     [ApiController]
     [Route ("api/[controller]")]
     public class TantanganController : ControllerBase {
-        private UserManager<ApplicationUser> _userManager;
-        private ScoreModelContext _scoreContext;
+        private AppSettings _appSettings;
+        private OcphDbContext db;
 
-        public TantanganController (UserManager<ApplicationUser> userManager, ScoreModelContext scoreContext) {
-            _userManager = userManager;
-            _scoreContext = scoreContext;
+        public TantanganController (IOptions<AppSettings> appSettings, OcphDbContext _db) {
+            _appSettings = appSettings.Value;
+            db = _db;
+
         }
 
         [HttpGet]
         public async Task<IActionResult> Get () {
             try {
-
-                var users = _userManager.Users.ToList ();
-                var tantangan = _scoreContext.Tantangan.ToList ();
+                await Task.Delay (50);
+                var users = db.Users.Select ().Where (x => x.Role != Role.Admin).ToList ();
+                var tantangan = db.Tantangan.Select ();
 
                 var result = from a in tantangan
-                join b in users on a.UserId equals b.Id
-                join c in users on a.LawanId equals c.Id
+                join b in users on a.UserId equals b.IdUser
+                join c in users on a.LawanId equals c.IdUser
                 select new { UserScore = a.UserScore, LawanScore = a.LawanScore, Tanggal = a.Tanggal, Idtantangan = a.IdTantangan, User1 = b.PlayerName, User2 = c.PlayerName, Winner = a.UserScore >= a.LawanScore?b.PlayerName : c.PlayerName };
 
-                return Ok (result);
+                return Ok (result.ToList ());
             } catch (System.Exception ex) {
 
                 return BadRequest (ex.Message);

@@ -5,29 +5,31 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using MainWebGame.Data;
 using MainWebGame.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace MainWebGame.Controllers {
 
     [ApiController]
     [Route ("api/[controller]")]
     public class StatisticController : ControllerBase {
-        private UserManager<ApplicationUser> _userManager;
-        private ScoreModelContext _scoreContext;
+        private AppSettings _appSettings;
+        private OcphDbContext db;
 
-        public StatisticController (UserManager<ApplicationUser> userManager, ScoreModelContext scoreContext) {
-            _userManager = userManager;
-            _scoreContext = scoreContext;
+        public StatisticController(IOptions<AppSettings> appSettings, OcphDbContext _db)
+        {
+            _appSettings = appSettings.Value;
+            db = _db;
+
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get (string userId) {
+        public async Task<IActionResult> Get (int userId) {
             try {
-                var tantangan = _scoreContext.Tantangan.ToList ();
+                var tantangan = db.Tantangan.Select().ToList ();
                 var data = tantangan.Where (x => x.UserId == userId || x.LawanId == userId);
                 var results = from a in data select new PlayerScore {
                     Tanggal = a.Tanggal,
@@ -53,18 +55,18 @@ namespace MainWebGame.Controllers {
             }
         }
 
-        private int getRank (string userid) {
-            var users = _userManager.Users.ToList ();
-            var tantangan = _scoreContext.Tantangan.ToList ();
+        private int getRank (int userid) {
+            var users = db.Users.Select().ToList ();
+            var tantangan = db.Tantangan.Select().ToList ();
             var listResult = new List<PlayerScore> ();
             foreach (var item in users) {
-                var data = tantangan.Where (x => x.UserId == item.Id || x.LawanId == item.Id);
+                var data = tantangan.Where (x => x.UserId == item.IdUser || x.LawanId == item.IdUser);
                 var results = from a in data select new {
-                    Score = a.UserId == item.Id?a.UserScore : a.LawanScore
+                    Score = a.UserId == item.IdUser?a.UserScore : a.LawanScore
                 };
 
                 if (item.PlayerName.ToLower () != "admin")
-                    listResult.Add (new PlayerScore { Id = item.Id, PlayerName = item.PlayerName, Score = results.Sum (x => x.Score) });
+                    listResult.Add (new PlayerScore { Id = item.IdUser, PlayerName = item.PlayerName, Score = results.Sum (x => x.Score) });
             }
 
             var sorts = listResult.OrderByDescending (x => x.Score).ToArray ();

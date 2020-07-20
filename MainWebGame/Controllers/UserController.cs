@@ -1,43 +1,79 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using MainWebGame.Data;
+using MainWebGame.Models;
+using MainWebGame.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace MainWebGame.Controllers {
 
     [ApiController]
     [Route ("api/[controller]/[action]")]
     public class UserController : ControllerBase {
-        private UserManager<ApplicationUser> _userManager;
 
-        public UserController (UserManager<ApplicationUser> userManager) {
-            _userManager = userManager;
+        private OcphDbContext db;
+        private IUserService _userService;
+
+        public UserController (OcphDbContext _db, IUserService service) {
+            db = _db;
+            _userService = service;
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> login (UserLogin user) {
+            try {
+
+                var result = await _userService.Authenticate (user.UserName, user.Password);
+                return Ok (result);
+            } catch (System.Exception ex) {
+                return BadRequest (ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> register (UserRegister user) {
+            try {
+                var result = await _userService.Register (user);
+                return Ok (result);
+            } catch (System.Exception ex) {
+                return BadRequest (ex.Message);
+            }
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> profile () {
-            var userId = User.FindFirstValue (ClaimTypes.NameIdentifier); // will give the user's userId
-            var userName = User.FindFirstValue (ClaimTypes.Name); // will give the user's userName
+            try {
+                await Task.Delay (1);
+                var user = User.Profile (db);
+                if (user != null)
+                    return Ok (user);
 
-            ApplicationUser applicationUser = await _userManager.GetUserAsync (User);
-            if (applicationUser != null)
-                return Ok (new { Id = applicationUser.Id, UserName = applicationUser.UserName, PlayerName = applicationUser.PlayerName, Photo = applicationUser.Photo });
-            else return Ok (null);
+                throw new System.Exception ("Data Profile Anda Tidak Ditemukan");
+            } catch (System.Exception ex) {
+
+                return BadRequest (ex.Message);
+            }
         }
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> photo (ApplicationUser user) {
-            ApplicationUser applicationUser = await _userManager.FindByIdAsync (user.Id);
-            if (applicationUser != null) {
-                applicationUser.Photo = user.Photo;
-                var result = await _userManager.UpdateAsync (applicationUser);
+        public async Task<IActionResult> photo (User user) {
+            try {
+                await Task.Delay (1);
+                var updated = db.Users.Update (x => new { x.Photo }, user, x => x.IdUser == user.IdUser);
+                if (updated)
+                    return Ok (true);
+
+                throw new System.Exception ("Data Profile Anda Tidak Ditemukan");
+            } catch (System.Exception ex) {
+
+                return BadRequest (ex.Message);
             }
-            return Ok (true);
         }
 
     }

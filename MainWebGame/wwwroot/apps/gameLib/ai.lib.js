@@ -208,7 +208,7 @@ function AI(othe) {
     maxDeep = 4;
     aiHistory = [];
 
-    function MinMax(map, deep, isMax, alpha, beta, F) {
+    function MinMax(map, deep, isMax, alpha, beta) {
         othe.findLocation(map);
         if (deep == maxDepth) {
             var e = evaluation(map);
@@ -216,37 +216,33 @@ function AI(othe) {
             returnedTarget.side = map.side == 1 ? -1 : 1;
             othe.findLocation(returnedTarget);
             var f = evaluation(returnedTarget);
-            console.log("Total Evaluasi =", e - f)
-
+            console.log("Total Evaluasi =", e - f, "\r\n\n");
             var result = map.side == -1 ? e - f : f - e;
-            return { value: result };
+            return result;
         }
 
 
         if (isMax) {
-            var best = { value: Min};
+            var best = Min;
             for (var i = 0; i < map.nextIndex.length; i++) {
                 var newMap = othe.newMap(map, map.nextIndex[i]);
                 newMap.MapKey = map.nextIndex[i];
 
-                console.log("V=", best, " |alpha=", alpha, " |beta=", beta, " |Key=", F)
+                console.log("\n\nV=", best, " |alpha=", alpha, " |beta=", beta)
                 oo.printMap(newMap);
                
                 val = MinMax(newMap, deep + 1, false, alpha, beta);
 
-              /*  if (best < val) {
-                    aiHistory.push({ a: val, key: newMap.MapKey, isMax: false });
-                    F = newMap.MapKey;
-                }*/
+                if (val > best) {
+                    bestMove = newMap.MapKey;
+                    best = val;
+                }
 
-                best = best.value >= val.value ? best : val;
-                alpha = alpha.value >= best.value ? alpha : best;
-
-                best.Key = newMap.MapKey;
-
-                console.log("V=", best, " - ", F);
-                if (beta.value <= alpha.value) {
-                    console.log("Prune", val)
+                if (best> alpha)
+                     alpha = best;
+               
+                if (beta<= alpha) {
+                    console.log("Prune", val, "\n\n\ ")
                     break;
                 } 
                
@@ -256,25 +252,26 @@ function AI(othe) {
 
 
         } else {
-           var best = { value: Max };
+           let best = Max ;
 
             for (var i = 0; i < map.nextIndex.length; i++) {
                 var newMap = othe.newMap(map, map.nextIndex[i]);
                 newMap.MapKey = map.nextIndex[i];
-                console.log("V=", best, " |alpha=", alpha, " |beta=", beta, " |Key=", F )
+                console.log("\n\n V=", best, " |alpha=", alpha, " |beta=", beta )
                 oo.printMap(newMap);
-                val = MinMax(newMap, deep + 1, true, alpha, beta);
-               /* if (val < best) {
-                    aiHistory.push({ a: val, key: newMap.MapKey, isMax: false });
-                }
-*/
-                best.Key = newMap.MapKey;
-                best = best.value <= val.value ? best : val;
-                beta= beta.value <= best.value ? beta : best;
 
-                console.log("V=", best, " - ", F);
-                if (beta.value <= alpha.value) {
-                    console.log("Prune", val)
+                val = MinMax(newMap, deep + 1, true, alpha, beta);
+
+                if (val < best) {
+                    bestMove = newMap.MapKey;
+                    best = val;
+                }    
+
+                if (best< beta)
+                    beta = best;
+
+                if (beta<= alpha) {
+                    console.log("Prune", val.value, "\n\n")
                     break;
                 }
             }
@@ -282,8 +279,6 @@ function AI(othe) {
             return best;
         }
     }
-
-
 
 
     oo.startSearch = function (m) {
@@ -295,30 +290,10 @@ function AI(othe) {
 
         var F = null;
 
-        var best = MinMax(m, 0, true, { value: -Infinity }, { value: -Infinity}, F);
+        var best = MinMax(m, 0, true, -Infinity , -Infinity );
 
-
-
-
-
-
-
-/*
-        var level1 = [];
-        m.nextIndex.forEach(x => {
-            var newArray = othe.newMap(m, x);
-            level1.push(newArray);
-            othe.findLocation(newArray);
-            oo.printMap(newArray);
-        })*//*
-        var level1 = [];
-        m.nextIndex.forEach(x => {
-            var newArray = othe.newMap(m, x);
-            level1.push(newArray);
-            othe.findLocation(newArray);
-            oo.printMap(newArray);
-        })*/
-        return best.Key;
+        console.log("BEST MOVE : ", bestMove);
+        return bestMove;
 
 
 	};

@@ -1,8 +1,23 @@
-<div class="admin-title">
-    <h3>Beranda</h3>
-    <hr />
+<div ng-app="admin" class="main">
+    <div class="leftSide">
+        <ul>
+            <li><a ng-click="">Selamat Datang</a></li>
+            <li> <a ui-sref="admin-home" ui-sref-active="active"><i class="fa fa-home fa-2x"></i> Beranda</a></li>
+            <li><a ui-sref="admin-peraturan"><i class="fa fa-cogs fa-2x"></i> Data Aturan</a></li>
+            <li><a ui-sref="admin-pemain"><i class="fa fa-user fa-2x"></i> Data Pemain</a></li>
+            <li><a ui-sref="admin-tantangan"><i class="fa fa-trophy fa-2x"></i> Data Tantangan</a></li>
+            <li><a ui-sref="logout()"><i class="fa fa-power-off fa-2x"></i>Logout</a></li>
+        </ul>
+    </div>
+    <div class="mainSide">
+        <ui-view></ui-view>
+    </div>
 </div>
 
-<div class="admin-wellcome">
-    <h1>Selamat Datang</h1>
-</div>
+<style>
+    i {
+        width: 32px;
+        height: 32px;
+        margin-right: 5px;
+    }
+</style>

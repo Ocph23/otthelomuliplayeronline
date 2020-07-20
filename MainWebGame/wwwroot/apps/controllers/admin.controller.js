@@ -5,7 +5,11 @@ angular
 	.controller('tantanganController', tantanganController)
 	.controller('playersController', playersController);
 
-function adminController($scope) {}
+function adminController($scope, AuthService) {
+	AuthService.profile().then((x) => {
+		if (x.role.toLowerCase() != 'admin') $state.go('login');
+	});
+}
 
 function peraturanController($scope, PeraturanService, message) {
 	$scope.model = {};
@@ -23,8 +27,8 @@ function peraturanController($scope, PeraturanService, message) {
 		} else {
 			PeraturanService.put(model).then((x) => {});
 		}
-        $('#myModal').modal('hide');
-        $scope.model = {};
+		$('#myModal').modal('hide');
+		$scope.model = {};
 	};
 
 	$scope.delete = (item) => {
