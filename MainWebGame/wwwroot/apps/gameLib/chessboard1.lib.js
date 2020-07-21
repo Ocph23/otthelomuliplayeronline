@@ -16,7 +16,7 @@ function Chessboard() {
 
 	chessBoard.create = function() {
 		var obj = document.getElementById('chessboard');
-		var html = "<table class='table'>";
+		var html = '<table >';
 		for (var i = 0; i < 8; i++) {
 			html += '<tr>';
 			for (var j = 0; j < 8; j++) html += "<td class='bg" + (j + i) % 2 + "'><div></div></td>";
@@ -36,7 +36,9 @@ function Chessboard() {
 	chessBoard.update = function(m, nop) {
 		for (var i = 0; i < 64; i++) pieces[i].className = [ 'white', '', 'black' ][m[i] + 1];
 		if (nop) {
-            for (var n in m.next) { pieces[n].className = 'prompt'; }
+			for (var n in m.next) {
+				pieces[n].className = 'prompt';
+			}
 		}
 		for (var i = 0; i < m.newRev.length; i++) pieces[m.newRev[i]].className += ' reversal';
 		if (m.newPos != -1) {

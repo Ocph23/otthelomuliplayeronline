@@ -9,12 +9,11 @@ function PlayerService($q, message, $state, AuthService) {
 	var service = {};
 	service.MyUserName = '';
 	service.players = [];
-	var token = AuthService.getToken();
 	service.connection = new signalR.HubConnectionBuilder()
 		.withUrl('/gameHub', {
 			transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
 			'content-type': 'application/json',
-			accessTokenFactory: () => token
+			accessTokenFactory: () => AuthService.getToken()
 		})
 		.configureLogging(signalR.LogLevel.Information)
 		.build();

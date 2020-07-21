@@ -4,15 +4,22 @@ body {
 }
 #desk {
     top: 5px;
-    width: 60%;
     margin: auto;
+    position: relative;
+    width: 80%;
+    height: 100%;
 }
 
 #chessboard {
+    position: absolute;
+    background: rgba(76, 224, 8, 0.76);
+    height: 77%;
     width: 100%;
-    height: 100%;
+
     table {
+        position: relative;
         height: 100%;
+        width: 100%;
         tbody {
             tr {
                 height: calc(100% / 8);
@@ -21,19 +28,19 @@ body {
                 align-self: stretch;
                 td {
                     display: flex;
-                    height: 100%;
+                    height: 100%/8;
                     width: calc(100% / 8);
-                    border: 1px #2cd6ec solid;
-                    background: #ffffff;
-                    box-shadow: inset 9px 9px 18px #b3b3b3, inset -9px -9px 18px #ffffff;
+                    border: 0.3px #111111 solid;
+                    background: #068704;
+                    box-shadow: inset 20px 20px 60px #057303, inset -20px -20px 60px #079b05;
                     .node {
                         width: 50%;
                         height: 50%;
                         margin: auto;
                         align-self: center;
                         border-radius: 50%;
-                        background: #595959;
-                        box-shadow: -6px 6px 12px #dfdfdf, 6px -6px 12px #949393;
+                        background: #068704;
+                        box-shadow: -6px 6px 12px #068704, 6px -6px 12px #068704;
                     }
                 }
             }
@@ -54,7 +61,7 @@ body {
     justify-content: space-around;
     border: solid 1px #2cd6ec;
     .score-item {
-        width: 100%;
+        width: 150px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -98,6 +105,9 @@ body {
 .bottom-menu {
     display: flex;
     justify-content: center;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
 }
 .side {
     border: 3px solid #ccecf0;
@@ -206,29 +216,6 @@ body {
                 }
             }
         }
-    }
-}
-
-[style*="--aspect-ratio"] > :first-child {
-    width: 100%;
-}
-[style*="--aspect-ratio"] > img {
-    height: auto;
-}
-@supports (--custom: property) {
-    [style*="--aspect-ratio"] {
-        position: relative;
-    }
-    [style*="--aspect-ratio"]::before {
-        content: "";
-        display: block;
-        padding-bottom: calc(100% / (var(--aspect-ratio)));
-    }
-    [style*="--aspect-ratio"] > :first-child {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
     }
 }
 

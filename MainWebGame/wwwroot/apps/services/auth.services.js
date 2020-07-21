@@ -66,8 +66,11 @@ function AuthService($http, $q, StorageService, $state, helperServices, message)
 					def.resolve(res.data);
 				},
 				(err) => {
-					message.error(err);
-					def.reject();
+					if ((err.status = 401)) {
+						$state.go('login');
+						def.reject();
+					} else {
+					}
 				}
 			);
 		}

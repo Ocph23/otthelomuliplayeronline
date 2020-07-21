@@ -8,29 +8,32 @@ angular
 	.controller('gameVsComputerController', gameVsComputerController)
 	.controller('gamePlayController', gamePlayController);
 
+function gameController($scope, $state, AuthService, helperServices) {
+	$scope.profile = {};
+	AuthService.profile().then(
+		(x) => {
+			if (x.role.toLowerCase() != 'player') {
+				$state.go('login');
+			}
 
-function gameController($scope, AuthService) {
-    $scope.profile = {};
-    AuthService.profile().then(
-        (x) => {
-            if (x.role.toLowerCase() != 'player') {
-                $state.go('login');
-            }
-            $scope.profile = x;
-            $scope.photos = x.photo;
-        },
-        (err) => {
-            $state.go('login');
-        }
-    );
-    $scope.logoff = () => {
-        AuthService.logOff();
-    }
+			$scope.profile = x;
+			if (x.photo) {
+				$scope.photox = 'data:image/png;base64,' + x.photo;
+			} else {
+				var img = document.getElementById('photoProfile');
+				img.src = helperServices.url + '/images/noimage.png';
+			}
+		},
+		(err) => {
+			$state.go('login');
+		}
+	);
+	$scope.logoff = () => {
+		AuthService.logOff();
+	};
 }
 
 function gameHomeController($scope, PlayerService, $state, message, AuthService) {
-   
-
 	AuthService.profile().then(
 		(x) => {
 			if (x.role.toLowerCase() != 'player') {
@@ -167,8 +170,8 @@ function gamePlayController($scope, GameService, $state, $stateParams, AuthServi
 }
 
 function gameVsComputerController($scope, $state, GameService, $state, AuthService) {
-    $scope.model = {};
-   
+	$scope.model = {};
+
 	AuthService.profile().then((x) => {
 		$scope.profile = x;
 		$scope.photos = x.photo;
@@ -185,18 +188,16 @@ function gameVsComputerController($scope, $state, GameService, $state, AuthServi
 		});
 	};
 
-	
-
 	$scope.start = (params) => {
 		if (params.pion == 1) {
-            $scope.side1 = $scope.profile.playerName;
+			$scope.side1 = $scope.profile.playerName;
 			$scope.side2 = 'Computer';
 		} else {
-            $scope.side2 = $scope.profile.playerName;
+			$scope.side2 = $scope.profile.playerName;
 			$scope.side1 = 'Computer';
-        }
-        params.mePlay = $scope.changeMePlay;
-        
+		}
+		params.mePlay = $scope.changeMePlay;
+
 		GameService.startVsComputer(params);
 		$scope.otthe = GameService.getOtthelo();
 	};
@@ -245,7 +246,6 @@ function peringkatController($scope, PlayerService, PeraturanService) {
 }
 
 function aturanController($scope, PlayerService, PeraturanService) {
-	$scope.userId = PlayerService.getMyUserId();
 	$scope.playerService = PlayerService;
 
 	PeraturanService.get().then((x) => {
@@ -254,54 +254,49 @@ function aturanController($scope, PlayerService, PeraturanService) {
 }
 
 function profileController($scope, PlayerService, PeraturanService, AuthService) {
-	
-    $scope.playerService = PlayerService;
+	$scope.playerService = PlayerService;
 
-    AuthService.profile().then(
-        (x) => {
-            if (x.role.toLowerCase() != 'player') {
-                $state.go('login');
-            }
-            PeraturanService.getStatistik(x.idUser).then((x) => {
-                $scope.datas = x;
-                $scope.resume = x.resume;
-                var labels = [];
-                var datas = [];
-                x.data.forEach((element) => {
-                    labels.push(element.label);
-                    datas.push(element.score);
-                });
+	AuthService.profile().then(
+		(x) => {
+			if (x.role.toLowerCase() != 'player') {
+				$state.go('login');
+			}
+			PeraturanService.getStatistik(x.idUser).then((x) => {
+				$scope.datas = x;
+				$scope.resume = x.resume;
+				var labels = [];
+				var datas = [];
+				x.data.forEach((element) => {
+					labels.push(element.label);
+					datas.push(element.score);
+				});
 
-                var ctx = document.getElementById('myChart').getContext('2d');
-                var chart = new Chart(ctx, {
-                    // The type of chart we want to create
-                    type: 'line',
+				var ctx = document.getElementById('myChart').getContext('2d');
+				var chart = new Chart(ctx, {
+					// The type of chart we want to create
+					type: 'line',
 
-                    // The data for our dataset
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'Score',
-                                borderColor: 'rgb(255, 99, 132)',
-                                data: datas
-                            }
-                        ]
-                    },
+					// The data for our dataset
+					data: {
+						labels: labels,
+						datasets: [
+							{
+								label: 'Score',
+								borderColor: 'rgb(255, 99, 132)',
+								data: datas
+							}
+						]
+					},
 
-                    // Configuration options go here
-                    options: {}
-                });
-            });
-        },
-        (err) => {
-            $state.go('login');
-        }
-    );
-
-
-
-	
+					// Configuration options go here
+					options: {}
+				});
+			});
+		},
+		(err) => {
+			$state.go('login');
+		}
+	);
 }
 
 function generate(historyMain, id, m) {

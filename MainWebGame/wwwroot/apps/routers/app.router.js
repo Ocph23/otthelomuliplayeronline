@@ -1,9 +1,9 @@
 angular.module('app.router', [ 'ui.router', 'admin.router' ]).config(function($stateProvider, $urlRouterProvider) {
-	$urlRouterProvider.otherwise('/game/home');
+	$urlRouterProvider.otherwise('/account/login');
 	$stateProvider
 		.state('player', {
-            url: '/game',
-            controller: 'gameController',
+			url: '/game',
+			controller: 'gameController',
 			templateUrl: './apps/views/games/index.html'
 		})
 		.state('player-home', {

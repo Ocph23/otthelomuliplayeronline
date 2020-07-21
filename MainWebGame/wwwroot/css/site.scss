@@ -74,12 +74,16 @@ body {
 .account-panel {
     width: 100%;
     align-items: center;
+    height: 90vh;
     .account-main {
+        margin-top: 50%;
         width: 300px;
+        position: relative;
         margin: auto;
         #account {
             width: 300px;
-            margin: 5px;
+            margin-top: 50%;
+            margin-bottom: 50%;
         }
     }
 }

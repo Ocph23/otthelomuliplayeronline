@@ -24,16 +24,18 @@
     </div>
     <div style="--aspect-ratio:1/1;">
         <div id="chessboard"></div>
+        <div class="bottom-menu" style="margin: 5px;">
+            <button id="play" ng-click="resign()" class="btn btn-danger">Menyerah</button>
+            <!--div id="back" class="button">Retract</div-->
+            <button id="2d3d" class="btn btn-primary">3D</button>
+            <button id="ai" ng-disabled="!mePlay" class="btn btn-warning" ng-click="AiPlay()">Solusi</button>
+            <button id="btnHistory" class="btn btn-info" data-toggle="modal" data-target="#history"
+                ng-click="showHistory()">History</button>
+            <!--div-- id="explain" class="button">About</!--div-->
+        </div>
     </div>
-    <div class="bottom-menu" style="margin: 5px;">
-        <button id="play" ng-click="resign()" class="btn btn-danger">Menyerah</button>
-        <!--div id="back" class="button">Retract</div-->
-        <button id="2d3d" class="btn btn-primary">3D</button>
-        <button id="ai" ng-disabled="!mePlay" class="btn btn-warning" ng-click="AiPlay()">Solusi</button>
-        <button id="btnHistory" class="btn btn-info" data-toggle="modal" data-target="#history"
-            ng-click="showHistory()">History</button>
-        <!--div-- id="explain" class="button">About</!--div-->
-    </div>
+
+
 </div>
 
 <!-- Modal -->
@@ -49,8 +51,8 @@
                 <div style="margin-left:30px">
                     <input type="radio" ng-model="model.pion" value="-1" name="side"><span>Computer</span><br />
                 </div>
-             
-              
+
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="cancel()">Batal</button>

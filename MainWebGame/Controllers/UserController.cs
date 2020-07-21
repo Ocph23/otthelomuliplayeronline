@@ -13,7 +13,6 @@ namespace MainWebGame.Controllers {
     [ApiController]
     [Route ("api/[controller]/[action]")]
     public class UserController : ControllerBase {
-
         private OcphDbContext db;
         private IUserService _userService;
 

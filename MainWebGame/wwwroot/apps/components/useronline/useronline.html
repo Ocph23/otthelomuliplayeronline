@@ -2,7 +2,8 @@
     <div class="user-avatar">
         <div class="online-status"
             ng-class="{'bg-online': $ctrl.player.isOnline, 'bg-offline': !$ctrl.player.isOnline}"></div>
-        <img style="height: 45px; width: 45px;" id="photo" ng-src="{{'data:image/png;base64,'+ $ctrl.player.photo}}">
+        <img src="/images/noimage.png" style="height: 45px; width: 45px;" id="photo"
+            ng-src="{{'data:image/png;base64,'+ $ctrl.player.photo}}">
 
     </div>
     <div class="user-detail">

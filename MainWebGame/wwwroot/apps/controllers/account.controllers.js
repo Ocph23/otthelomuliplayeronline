@@ -4,6 +4,15 @@ angular
 	.controller('RegisterController', RegisterController);
 
 function LoginController($scope, $state, AuthService) {
+	AuthService.profile().then(
+		(x) => {
+			if (x) {
+				$state.go(x.role.toLowerCase() + '-home');
+			}
+		},
+		(err) => {}
+	);
+
 	$scope.login = function(user) {
 		AuthService.login(user).then((x) => {
 			$state.go(x.role.toLowerCase() + '-home');

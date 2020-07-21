@@ -75,7 +75,7 @@ angular
 										//scope.photos = base64String;
 										setTimeout(() => {
 											scope.$apply(function() {
-												scope.photos = base64String;
+												scope.photos = 'data:image/png;base64,' + base64String;
 												$http({
 													method: 'post',
 													url: helperServices.url + '/api/user/photo',
@@ -84,10 +84,10 @@ angular
 												}).then(
 													(res) => {
 														//def.resolve(res.data);
-														message.info('Photo Profile Berhasil Diubah');
+														//message.info('Photo Profile Berhasil Diubah');
 													},
 													(err) => {
-														message.error(err);
+														//message.error(err);
 														//def.reject();
 													}
 												);

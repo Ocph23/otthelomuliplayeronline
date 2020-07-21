@@ -5,17 +5,23 @@ body {
 
 #desk {
   top: 5px;
-  width: 60%;
   margin: auto;
+  position: relative;
+  width: 80%;
+  height: 100%;
 }
 
 #chessboard {
+  position: absolute;
+  background: rgba(76, 224, 8, 0.76);
+  height: 77%;
   width: 100%;
-  height: 100%;
 }
 
 #chessboard table {
+  position: relative;
   height: 100%;
+  width: 100%;
 }
 
 #chessboard table tbody tr {
@@ -32,12 +38,12 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  height: 100%;
+  height: 100%/8;
   width: calc(100% / 8);
-  border: 1px #2cd6ec solid;
-  background: #ffffff;
-  -webkit-box-shadow: inset 9px 9px 18px #b3b3b3, inset -9px -9px 18px #ffffff;
-          box-shadow: inset 9px 9px 18px #b3b3b3, inset -9px -9px 18px #ffffff;
+  border: 0.3px #111111 solid;
+  background: #068704;
+  -webkit-box-shadow: inset 20px 20px 60px #057303, inset -20px -20px 60px #079b05;
+          box-shadow: inset 20px 20px 60px #057303, inset -20px -20px 60px #079b05;
 }
 
 #chessboard table tbody tr td .node {
@@ -48,9 +54,9 @@ body {
       -ms-grid-row-align: center;
       align-self: center;
   border-radius: 50%;
-  background: #595959;
-  -webkit-box-shadow: -6px 6px 12px #dfdfdf, 6px -6px 12px #949393;
-          box-shadow: -6px 6px 12px #dfdfdf, 6px -6px 12px #949393;
+  background: #068704;
+  -webkit-box-shadow: -6px 6px 12px #068704, 6px -6px 12px #068704;
+          box-shadow: -6px 6px 12px #068704, 6px -6px 12px #068704;
 }
 
 #vsCompOption span {
@@ -72,7 +78,7 @@ body {
 }
 
 .score-main .score-item {
-  width: 100%;
+  width: 150px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -136,6 +142,9 @@ body {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
 }
 
 .side {
@@ -242,31 +251,6 @@ body {
     color: white;
     text-shadow: 0px 0px 3px grey;
     margin: 3px;
-  }
-}
-
-[style*="--aspect-ratio"] > :first-child {
-  width: 100%;
-}
-
-[style*="--aspect-ratio"] > img {
-  height: auto;
-}
-
-@supports (--custom: property) {
-  [style*="--aspect-ratio"] {
-    position: relative;
-  }
-  [style*="--aspect-ratio"]::before {
-    content: "";
-    display: block;
-    padding-bottom: calc(100% / (var(--aspect-ratio)));
-  }
-  [style*="--aspect-ratio"] > :first-child {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
   }
 }
 
