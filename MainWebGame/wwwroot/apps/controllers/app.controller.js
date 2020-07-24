@@ -8,8 +8,14 @@ angular
 	.controller('gameVsComputerController', gameVsComputerController)
 	.controller('gamePlayController', gamePlayController);
 
-function gameController($scope, $state, AuthService, helperServices) {
+function gameController($scope, $state, AuthService, helperServices, swangular, GameService) {
 	$scope.profile = {};
+	setTimeout(() => {
+		var img = document.getElementById('photoProfile');
+		if (img) {
+			img.src = helperServices.url + '/images/noimage.png';
+		}
+	}, 100);
 	AuthService.profile().then(
 		(x) => {
 			if (x.role.toLowerCase() != 'player') {
@@ -20,8 +26,12 @@ function gameController($scope, $state, AuthService, helperServices) {
 			if (x.photo) {
 				$scope.photox = 'data:image/png;base64,' + x.photo;
 			} else {
-				var img = document.getElementById('photoProfile');
-				img.src = helperServices.url + '/images/noimage.png';
+				setTimeout(() => {
+					var img = document.getElementById('photoProfile');
+					if (img) {
+						img.src = helperServices.url + '/images/noimage.png';
+					}
+				}, 100);
 			}
 		},
 		(err) => {
@@ -42,8 +52,53 @@ function gameHomeController($scope, PlayerService, $state, message, AuthService)
 			$scope.profile = x;
 			$scope.photos = x.photo;
 			$scope.userId = $scope.profile.idUser;
-			if (!PlayerService.connection.connectionStarted) {
+			if (!PlayerService.connection) {
 				PlayerService.start();
+				PlayerService.connection.on('Users', (players) => {
+					$scope.$apply((x) => {
+						PlayerService.players = players.filter((x) => x.userId != $scope.userId);
+						PlayerService.MyAccount = players.find((x) => x.userId == $scope.userId);
+					});
+				});
+				PlayerService.connection.on('OnOnlinePlayer', (player) => {
+					setTimeout(() => {
+						$scope.$apply((x) => {
+							userExist = $scope.playerService.players.find((x) => x.userId == player.userId);
+							if (!userExist) $scope.playerService.players.push(player);
+							else {
+								userExist.connectionId = player.connectionId;
+							}
+						});
+					}, 2000);
+				});
+
+				PlayerService.connection.on('OnOfflinePlayer', (connectionId) => {
+					$scope.$apply((x) => {
+						userExist = $scope.playerService.players.find((x) => x.connectionId == connectionId);
+						if (userExist) {
+							var index = $scope.playerService.players.indexOf(userExist);
+							$scope.playerService.players.splice(index, 1);
+						}
+					});
+				});
+
+				PlayerService.connection.on('PlayerIsPlay', (players) => {
+					$scope.$apply((x) => {
+						players.forEach((element) => {
+							var player = $scope.playerService.players.find((x) => x.userId == element);
+							if (player) player.playing = true;
+						});
+					});
+				});
+
+				PlayerService.connection.on('PlayerNotPlay', (players) => {
+					$scope.$apply((x) => {
+						players.forEach((element) => {
+							var player = $scope.playerService.players.find((x) => x.userId == element);
+							if (player) player.playing = false;
+						});
+					});
+				});
 			}
 		},
 		(err) => {
@@ -52,52 +107,6 @@ function gameHomeController($scope, PlayerService, $state, message, AuthService)
 	);
 
 	$scope.playerService = PlayerService;
-
-	PlayerService.connection.on('Users', (players) => {
-		$scope.$apply((x) => {
-			PlayerService.players = players.filter((x) => x.userId != $scope.userId);
-			PlayerService.MyAccount = players.find((x) => x.userId == $scope.userId);
-		});
-	});
-	PlayerService.connection.on('OnOnlinePlayer', (player) => {
-		setTimeout(() => {
-			$scope.$apply((x) => {
-				userExist = $scope.playerService.players.find((x) => x.userId == player.userId);
-				if (!userExist) $scope.playerService.players.push(player);
-				else {
-					userExist.connectionId = player.connectionId;
-				}
-			});
-		}, 2000);
-	});
-
-	PlayerService.connection.on('OnOfflinePlayer', (connectionId) => {
-		$scope.$apply((x) => {
-			userExist = $scope.playerService.players.find((x) => x.connectionId == connectionId);
-			if (userExist) {
-				var index = $scope.playerService.players.indexOf(userExist);
-				$scope.playerService.players.splice(index, 1);
-			}
-		});
-	});
-
-	PlayerService.connection.on('PlayerIsPlay', (players) => {
-		$scope.$apply((x) => {
-			players.forEach((element) => {
-				var player = $scope.playerService.players.find((x) => x.userId == element);
-				if (player) player.playing = true;
-			});
-		});
-	});
-
-	PlayerService.connection.on('PlayerNotPlay', (players) => {
-		$scope.$apply((x) => {
-			players.forEach((element) => {
-				var player = $scope.playerService.players.find((x) => x.userId == element);
-				if (player) player.playing = false;
-			});
-		});
-	});
 
 	$scope.play = () => {
 		$state.go('game-play', { player: PlayerService.MyAccount });
@@ -112,7 +121,42 @@ function gameHomeController($scope, PlayerService, $state, message, AuthService)
 	};
 }
 
-function gamePlayController($scope, GameService, $state, $stateParams, AuthService) {
+function gamePlayController(
+	$scope,
+	swangular,
+	GameService,
+	$transitions,
+	swangular,
+	$state,
+	$stateParams,
+	AuthService
+) {
+	$transitions.onStart(
+		{},
+		function(transitions) {
+			if (transitions.from().name == 'game-play') {
+				return swangular
+					.swal({
+						title: 'Yakin ?',
+						text: 'Yakin Meninggal Kan Permainan ?',
+						type: 'warning',
+						showCancelButton: true,
+						confirmButtonText: 'Ya',
+						cancelButtonText: 'Batal',
+						reverseButtons: true
+					})
+					.then((result) => {
+						if (result.value) {
+							return true;
+						} else {
+							return false;
+						}
+					});
+			}
+		},
+		(err) => {}
+	);
+
 	AuthService.profile().then(
 		(x) => {
 			if (x.role.toLowerCase() != 'player') {
@@ -169,7 +213,31 @@ function gamePlayController($scope, GameService, $state, $stateParams, AuthServi
 	};
 }
 
-function gameVsComputerController($scope, $state, GameService, $state, AuthService) {
+function gameVsComputerController($scope, $state, $transitions, swangular, GameService, $state, AuthService, message) {
+	$transitions.onStart(
+		{},
+		function(transitions) {
+			if (transitions.from().name == 'game-vs-ai') {
+				return swangular
+					.swal({
+						title: 'Yakin ?',
+						text: 'Yakin Meninggal Kan Permainan ?',
+						type: 'warning',
+						showCancelButton: true,
+						confirmButtonText: 'Ya',
+						cancelButtonText: 'Batal',
+						reverseButtons: true
+					})
+					.then((result) => {
+						if (result.value) {
+						} else {
+							return false;
+						}
+					});
+			}
+		},
+		(err) => {}
+	);
 	$scope.model = {};
 
 	AuthService.profile().then((x) => {
@@ -237,9 +305,7 @@ function gameVsComputerController($scope, $state, GameService, $state, AuthServi
 }
 
 function peringkatController($scope, PlayerService, PeraturanService) {
-	$scope.userId = PlayerService.getMyUserId();
 	$scope.playerService = PlayerService;
-
 	PeraturanService.getPeringkat().then((x) => {
 		$scope.datas = x;
 	});
@@ -258,9 +324,11 @@ function profileController($scope, PlayerService, PeraturanService, AuthService)
 
 	AuthService.profile().then(
 		(x) => {
+			$scope.profile = x;
 			if (x.role.toLowerCase() != 'player') {
 				$state.go('login');
 			}
+
 			PeraturanService.getStatistik(x.idUser).then((x) => {
 				$scope.datas = x;
 				$scope.resume = x.resume;
@@ -291,12 +359,47 @@ function profileController($scope, PlayerService, PeraturanService, AuthService)
 					// Configuration options go here
 					options: {}
 				});
+
+				PeraturanService.getTantangan().then((x) => {
+					$scope.dataTantangan = x.filter(
+						(x) => x.idUser == $scope.profile.idUser || x.idLawan == $scope.profile.idUser
+					);
+				});
 			});
 		},
 		(err) => {
 			$state.go('login');
 		}
 	);
+
+	$scope.getHistory = (id) => {
+		PeraturanService.getHistory(id).then((x) => {
+			$scope.history = x;
+			var othello = new OthelloView({ pion: 1 });
+			othello.play();
+
+			x.forEach((element) => {
+				var map = othello.goChess(element.akhir);
+			});
+
+			$scope.histories = othello.getHistory();
+			var historyMain = document.getElementById('historyMain');
+			historyMain.innerHTML = '';
+			var id = 1;
+
+			generateHeader(historyMain, 'Awal');
+			generateHeader(historyMain, 'Akhir');
+
+			for (let index = 0; index < $scope.histories.length; index++) {
+				if (index > 1) {
+					generate(historyMain, id++, $scope.histories[index - 1]);
+					generate(historyMain, id++, $scope.histories[index]);
+				} else {
+					generate(historyMain, id++, $scope.histories[index]);
+				}
+			}
+		});
+	};
 }
 
 function generate(historyMain, id, m) {

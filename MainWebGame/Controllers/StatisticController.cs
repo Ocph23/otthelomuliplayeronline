@@ -19,8 +19,7 @@ namespace MainWebGame.Controllers {
         private AppSettings _appSettings;
         private OcphDbContext db;
 
-        public StatisticController(IOptions<AppSettings> appSettings, OcphDbContext _db)
-        {
+        public StatisticController (IOptions<AppSettings> appSettings, OcphDbContext _db) {
             _appSettings = appSettings.Value;
             db = _db;
 
@@ -29,17 +28,18 @@ namespace MainWebGame.Controllers {
         [HttpGet]
         public async Task<IActionResult> Get (int userId) {
             try {
-                var tantangan = db.Tantangan.Select().ToList ();
-                var data = tantangan.Where (x => x.UserId == userId || x.LawanId == userId);
-                var results = from a in data select new PlayerScore {
+                var tantangan = db.Tantangan.Select ().ToList ();
+                var data = from a in tantangan.Where (x => x.UserId == userId || x.LawanId == userId)
+                join b in db.Scores.Select () on a.IdTantangan equals b.IdTantangan
+                select new PlayerScore {
                     Tanggal = a.Tanggal,
-                    Score = a.UserId == userId ? a.UserScore : a.LawanScore,
-                    Win = a.UserId == userId && a.UserScore > a.LawanScore ? true : a.LawanId == userId && a.LawanScore > a.UserScore?true : false
+                    Score = a.UserId == userId ? b.UserScore : b.LawanScore,
+                    Win = a.UserId == userId && b.UserScore > b.LawanScore ? true : a.LawanId == userId && b.LawanScore > b.UserScore?true : false
                 };
 
-                var resume = new { Score = results.Sum (x => x.Score), Rank = getRank (userId), Games = results.Count (), Win = results.Where (x => x.Win).Count () };
+                var resume = new { Score = data.Sum (x => x.Score), Rank = getRank (userId), Games = data.Count (), Win = data.Where (x => x.Win).Count () };
 
-                var groups = results.GroupBy (x => new { x.Tanggal.Month, x.Tanggal.Year });
+                var groups = data.GroupBy (x => new { x.Tanggal.Month, x.Tanggal.Year });
 
                 List<object> list = new List<object> ();
                 foreach (var item in groups) {
@@ -56,17 +56,18 @@ namespace MainWebGame.Controllers {
         }
 
         private int getRank (int userid) {
-            var users = db.Users.Select().ToList ();
-            var tantangan = db.Tantangan.Select().ToList ();
+            var users = db.Users.Select ().ToList ();
+            var tantangan = db.Tantangan.Select ().ToList ();
             var listResult = new List<PlayerScore> ();
             foreach (var item in users) {
-                var data = tantangan.Where (x => x.UserId == item.IdUser || x.LawanId == item.IdUser);
-                var results = from a in data select new {
-                    Score = a.UserId == item.IdUser?a.UserScore : a.LawanScore
+                var data = from a in tantangan.Where (x => x.UserId == item.IdUser || x.LawanId == item.IdUser)
+                join b in db.Scores.Select () on a.IdTantangan equals b.IdTantangan
+                select new {
+                    Score = a.UserId == item.IdUser?b.UserScore : b.LawanScore
                 };
 
-                if (item.PlayerName!=null && item.PlayerName.ToLower () != "admin")
-                    listResult.Add (new PlayerScore { Id = item.IdUser, PlayerName = item.PlayerName, Score = results.Sum (x => x.Score) });
+                if (item.PlayerName != null && item.PlayerName.ToLower () != "admin")
+                    listResult.Add (new PlayerScore { Id = item.IdUser, PlayerName = item.PlayerName, Score = data.Sum (x => x.Score) });
             }
 
             var sorts = listResult.OrderByDescending (x => x.Score).ToArray ();

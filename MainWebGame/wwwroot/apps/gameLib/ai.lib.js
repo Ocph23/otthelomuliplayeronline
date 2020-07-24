@@ -128,8 +128,7 @@ function AI(othe) {
 
 	function evaluation(m) {
 		var evaluateFor = m.side == 1 ? ' X ' : ' O ';
-		console.log('Evaluate Map For ' + evaluateFor);
-		oo.printMap(m);
+
 		var corner = 0,
 			steady = 0,
 			uk = {};
@@ -202,13 +201,16 @@ function AI(othe) {
 	function MinMax(map, deep, isMax, alpha, beta) {
 		othe.findLocation(map);
 		if (deep == 2) {
+			console.log('Evaluate Map For ');
+			oo.printMap(map);
 			var e = evaluation(map);
 			const returnedTarget = Object.assign([], map);
 			returnedTarget.side = map.side == 1 ? -1 : 1;
 			othe.findLocation(returnedTarget);
 			var f = evaluation(returnedTarget);
-			console.log('Total Evaluasi =', e - f, '\r\n\n');
+
 			var result = map.side == -1 ? e - f : f - e;
+			console.log('Total Evaluasi =', result, '\r\n\n');
 			return result;
 		}
 
@@ -217,20 +219,13 @@ function AI(othe) {
 			for (var i = 0; i < map.nextIndex.length; i++) {
 				var newMap = othe.newMap(map, map.nextIndex[i]);
 				newMap.MapKey = map.nextIndex[i];
-
 				console.log('\n\nV=', best, ' |alpha=', alpha, ' |beta=', beta);
 				oo.printMap(newMap);
-
 				val = MinMax(newMap, deep + 1, false, alpha, beta);
+				best = Math.max(best, val);
+				alpha = Math.max(alpha, best);
 
-				if (val > best) {
-					bestMove = newMap.MapKey;
-					best = val;
-				}
-
-				if (best > alpha) alpha = best;
-
-				if (best >= beta) {
+				if (beta <= alpha) {
 					console.log('Prune', val, '\n\n ');
 					break;
 				}
@@ -245,18 +240,17 @@ function AI(othe) {
 				newMap.MapKey = map.nextIndex[i];
 				console.log('\n\n V=', best, ' |alpha=', alpha, ' |beta=', beta);
 				oo.printMap(newMap);
-
 				val = MinMax(newMap, deep + 1, true, alpha, beta);
 
 				if (val < best) {
-					bestMove = newMap.MapKey;
-					best = val;
+					bestMove = map.MapKey;
 				}
 
-				if (best < beta) beta = best;
+				best = Math.min(best, val);
+				beta = Math.min(beta, best);
 
-				if (best <= alpha) {
-					console.log('Prune', val.value, '\n\n');
+				if (beta <= alpha) {
+					console.log('Prune', val, '\n\n');
 					break;
 				}
 			}
@@ -273,8 +267,8 @@ function AI(othe) {
 		m.MapKey = null;
 
 		var F = null;
-
-		var best = MinMax(m, 0, true, -Infinity, -Infinity);
+		othe.findLocation(m);
+		var best = MinMax(m, 0, true, -Infinity, Infinity);
 
 		console.log('BEST MOVE : ', bestMove);
 		return bestMove;

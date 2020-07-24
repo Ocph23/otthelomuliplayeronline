@@ -7,7 +7,7 @@
     <div class="chart">
         <canvas id="myChart" width="300"></canvas>
     </div>
-
+    <hr />
     <div id="info" class="list-group" ng-show="resume">
         <a href="#" class="list-group-item list-group-item-action active">
             INFO DASAR
@@ -31,9 +31,76 @@
             </li>
         </ul>
     </div>
-
-
+    <hr />
+    <div class="admin-peraturan" ng-show="resume">
+        <div class="admin-title">
+            <h4>Daftar Tantangan</h4>
+            <hr />
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Waktu Main</th>
+                    <th scope="col">Pemain 1</th>
+                    <th scope="col">Pemain 2</th>
+                    <th scope="col">Pemenang</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in dataTantangan">
+                    <td scope="row">{{$index+1}}</td>
+                    <td>{{item.tanggal | date:'dd-MM-yyyy HH:ss'}}</td>
+                    <td>{{item.user1}} ({{item.userScore}})</td>
+                    <td>{{item.user2}} ({{item.lawanScore}})</td>
+                    <td>{{item.winner}}</td>
+                    <td><button class="btn btn-warning" data-toggle="modal" data-target="#history"
+                            ng-click="getHistory(item.idtantangan)">History</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<div class="score-main" id="score" hidden>
+    <div class="score-item">
+        <div id="side1" class="cbox">
+            <span>0</span>
+            <div class="black"></div>
+
+        </div>
+        <label id="playerSide1">{{side1}}</label>
+    </div>
+    <div class="score-item">
+        <div class="text-center">
+            <h1 hidden id="time">60</h1>
+        </div>
+    </div>
+    <div class="score-item">
+        <div id="side2" class="cbox">
+            <span>0</span>
+            <div class="white"></div>
+        </div>
+        <label id="playerSide2">{{side2}}</label>
+    </div>
+</div>
+
+<div class="modal fade modalHistory" id="history" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog  modal-xl" role="document">
+        <div class="modal-content">
+            <div id="historyMain" style="max-height: 90vh; overflow: scroll;">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <style>
     #info {
@@ -47,5 +114,10 @@
 
     li {
         color: #007bff;
+    }
+
+    th,
+    td {
+        color: white;
     }
 </style>

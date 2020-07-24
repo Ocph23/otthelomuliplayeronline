@@ -12,8 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
-namespace MainWebGame
-{
+namespace MainWebGame {
     public class Startup {
         public Startup (IConfiguration configuration) {
             Configuration = configuration;
@@ -23,67 +22,64 @@ namespace MainWebGame
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices (IServiceCollection services) {
-            services.AddCors();
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddCors ();
+            services.AddControllers ().AddNewtonsoftJson ();
             // configure strongly typed settings objects
-            var appSettingsSection = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
+            var appSettingsSection = Configuration.GetSection ("AppSettings");
+            services.Configure<AppSettings> (appSettingsSection);
 
             // configure jwt authentication
-            var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-            services.AddAuthentication(x => {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(x => {
+            var appSettings = appSettingsSection.Get<AppSettings> ();
+            var key = Encoding.ASCII.GetBytes (appSettings.Secret);
+            services.AddAuthentication (x => {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer (x => {
                     x.RequireHttpsMetadata = false;
                     x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
+                    x.TokenValidationParameters = new TokenValidationParameters {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        IssuerSigningKey = new SymmetricSecurityKey (key),
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
                 });
-            services.AddSignalR();
+            services.AddSignalR ();
             // configure DI for application services
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<OcphDbContext>();
+            services.AddScoped<IUserService, UserService> ();
+            services.AddScoped<OcphDbContext> ();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure (IApplicationBuilder app, IWebHostEnvironment env) {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment ()) {
+                app.UseDeveloperExceptionPage ();
             }
 
-            app.UseDefaultFiles(new DefaultFilesOptions
-            {
+            app.UseDefaultFiles (new DefaultFilesOptions {
                 DefaultFileNames = new List<string> { "index.html" }
             });
-            app.UseStaticFiles(); // For the wwwroot folder
+            app.UseStaticFiles (); // For the wwwroot folder
 
-            app.UseRouting();
-            var addresses = app.ServerFeatures.Get<IServerAddressesFeature>().Addresses;
-            var address = addresses.FirstOrDefault();
-            AppDomain.CurrentDomain.SetData("BaseUrl", address ?? "");
+            app.UseRouting ();
+            var addresses = app.ServerFeatures.Get<IServerAddressesFeature> ().Addresses;
+            var address = addresses.FirstOrDefault ();
+            AppDomain.CurrentDomain.SetData ("BaseUrl", address ?? "");
             // global cors policy
-            app.UseCors(x => x
-               .AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader());
+            app.UseCors (x => x
+                .AllowAnyOrigin ()
+                .AllowAnyMethod ()
+                .AllowAnyHeader ());
 
-            app.UseAuthentication();
-            app.UseAuthorization();
-            app.UseSignalR(routes => {
-                routes.MapHub<GameHub>("/gamehub");
+            app.UseMiddleware<WebSocketsMiddleware> ();
+            app.UseAuthentication ();
+            app.UseSignalR (routes => {
+                routes.MapHub<GameHub> ("/gamehub");
             });
 
-            app.UseEndpoints(endpoints => {
-                endpoints.MapControllers();
+            app.UseEndpoints (endpoints => {
+                endpoints.MapControllers ();
             });
         }
     }

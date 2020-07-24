@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MainWebGame.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -22,10 +23,9 @@ namespace MainWebGame.Controllers {
         public async Task<IActionResult> Get () {
             try {
                 await Task.Delay (2);
-                var result = new List<object> ();
                 var users = db.Users.Select ().ToList ();
 
-                return Ok (result);
+                return Ok (users.Where (x => x.Role != Role.Admin));
             } catch (System.Exception ex) {
 
                 return BadRequest (ex.Message);

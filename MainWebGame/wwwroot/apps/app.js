@@ -16,7 +16,7 @@ angular
 		};
 	})
 	.controller('homeController', homeController)
-	.directive('chooseFile', function($http, helperServices, AuthService) {
+	.directive('chooseFile', function($http, helperServices, AuthService, StorageService) {
 		return {
 			link: function(scope, elem, attrs) {
 				var button = elem.find('img');
@@ -83,8 +83,9 @@ angular
 													data: { IdUser: scope.userId, photo: base64String }
 												}).then(
 													(res) => {
-														//def.resolve(res.data);
-														//message.info('Photo Profile Berhasil Diubah');
+														var result = StorageService.getObject('user');
+														result.photo = base64String;
+														StorageService.addObject('user', result);
 													},
 													(err) => {
 														//message.error(err);

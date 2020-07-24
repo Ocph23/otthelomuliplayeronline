@@ -9,40 +9,42 @@ function PlayerService($q, message, $state, AuthService) {
 	var service = {};
 	service.MyUserName = '';
 	service.players = [];
-	service.connection = new signalR.HubConnectionBuilder()
-		.withUrl('/gameHub', {
-			transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
-			'content-type': 'application/json',
-			accessTokenFactory: () => AuthService.getToken()
-		})
-		.configureLogging(signalR.LogLevel.Information)
-		.build();
 
 	service.start = () => {
+		service.connection = new signalR.HubConnectionBuilder()
+			.withUrl('/gameHub', {
+				// transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
+				// 'content-type': 'application/json',
+				accessTokenFactory: () => AuthService.getToken()
+			})
+			.configureLogging(signalR.LogLevel.Information)
+			.build();
 		service.connection
 			.start()
 			.then(function() {
-				service.connection.invoke('GetUsers');
+				setTimeout(() => {
+					service.connection.invoke('GetUsers');
+				}, 1000);
 			})
 			.catch(function(err) {
 				return console.error(err.toString());
 			});
-	};
 
-	service.connection.on('OnInvite', function(userId) {
-		var player = service.players.find((x) => x.userId == userId);
-		message.dialog(player.playerName + ' Mengajak Anda Untuk Bermain', 'Terima', 'Tolak').then(
-			(x) => {
-				service.connection.invoke('Join', userId);
-			},
-			(err) => {
-				service.connection.invoke('RejectInvite', userId);
-			}
-		);
-	});
-	service.connection.on('OnStart', function(game) {
-		$state.go('game-play', { data: game });
-	});
+		service.connection.on('OnInvite', function(userId) {
+			var player = service.players.find((x) => x.userId == userId);
+			message.dialog(player.playerName + ' Mengajak Anda Untuk Bermain', 'Terima', 'Tolak').then(
+				(x) => {
+					service.connection.invoke('Join', userId);
+				},
+				(err) => {
+					service.connection.invoke('RejectInvite', userId);
+				}
+			);
+		});
+		service.connection.on('OnStart', function(game) {
+			$state.go('game-play', { data: game });
+		});
+	};
 
 	return service;
 }
@@ -62,7 +64,9 @@ function GameService($http, PlayerService, $state, $q) {
 	};
 
 	service.resign = () => {
-		PlayerService.connection.invoke('Resign');
+		if (PlayerService.connection) {
+			PlayerService.connection.invoke('Resign');
+		}
 	};
 
 	service.start = (game) => {
@@ -228,6 +232,24 @@ function PeraturanService($http, $q, message, helperServices, AuthService) {
 		$http({
 			method: 'get',
 			url: helperServices.url + '/api/tantangan',
+			headers: AuthService.getHeader()
+		}).then(
+			(res) => {
+				def.resolve(res.data);
+			},
+			(err) => {
+				message.error(err);
+				def.reject();
+			}
+		);
+		return def.promise;
+	};
+
+	service.getHistory = (id) => {
+		var def = $q.defer();
+		$http({
+			method: 'get',
+			url: helperServices.url + '/api/bantuan?id=' + id,
 			headers: AuthService.getHeader()
 		}).then(
 			(res) => {

@@ -125,6 +125,7 @@ namespace MainWebGame.Services {
             );
 
             return new JwtSecurityTokenHandler ().WriteToken (token);
+
         }
     }
 }

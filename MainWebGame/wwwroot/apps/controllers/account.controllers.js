@@ -3,7 +3,13 @@ angular
 	.controller('LoginController', LoginController)
 	.controller('RegisterController', RegisterController);
 
-function LoginController($scope, $state, AuthService) {
+function LoginController($scope, $state, AuthService, $stateParams) {
+	if ($stateParams.username) {
+		setTimeout((x) => {
+			$scope.model = { username: '', password: '' };
+			$scope.model.username = $stateParams.username;
+		}, 2000);
+	}
 	AuthService.profile().then(
 		(x) => {
 			if (x) {
@@ -23,7 +29,7 @@ function LoginController($scope, $state, AuthService) {
 function RegisterController($scope, $state, AuthService) {
 	$scope.register = function(user) {
 		AuthService.register(user).then((x) => {
-			$state.go(x.role + '-home');
+			$state.go('login', { username: user.userName });
 		});
 	};
 }

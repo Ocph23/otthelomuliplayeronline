@@ -13,7 +13,7 @@ body {
 #chessboard {
     position: absolute;
     background: rgba(76, 224, 8, 0.76);
-    height: 77%;
+    height: 71%;
     width: 100%;
 
     table {
@@ -45,6 +45,28 @@ body {
                 }
             }
         }
+    }
+}
+
+@media (min-width: 768px) {
+    #desk {
+        width: 60%;
+        height: 90%;
+    }
+
+    #chessboard {
+        height: 70%;
+    }
+}
+
+@media (min-width: 1024px) {
+    #desk {
+        width: 50%;
+        height: 90%;
+    }
+
+    #chessboard {
+        height: 70%;
     }
 }
 

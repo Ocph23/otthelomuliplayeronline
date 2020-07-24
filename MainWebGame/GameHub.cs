@@ -112,7 +112,7 @@ namespace MainWebGame {
         }
 
         public async Task GameOver (Game game) {
-
+            var trans = db.BeginTransaction ();
             try {
                 if (game != null)
                     Games.Remove (game);
@@ -126,13 +126,17 @@ namespace MainWebGame {
                 await Task.Delay (300);
                 var tantangan = new Tantangan {
                     UserId = game.Owner.UserId, LawanId = game.Opponent.UserId, Tanggal = game.Tanggal,
-                    UserScore = game.Owner.Point, LawanScore = game.Opponent.Point
                 };
                 var cons = GetConnectionByGame (game);
                 await Clients.Client (cons.Item1).SendAsync ("GameOver", game);
                 await Clients.Client (cons.Item2).SendAsync ("OnResign", game);
 
                 tantangan.IdTantangan = db.Tantangan.InsertAndGetLastID (tantangan);
+                db.Scores.Insert (new HasilBermain {
+                    IdTantangan = tantangan.IdTantangan, UserScore = game.Owner.Point,
+                        LawanScore = game.Opponent.Point
+                });
+
                 var awal = 0;
                 foreach (var item in game.History) {
                     item.IdTantangan = tantangan.IdTantangan;
@@ -140,8 +144,10 @@ namespace MainWebGame {
                     db.BantuanSolusi.InsertAndGetLastID (item);
                     awal = item.Akhir;
                 }
-            } catch (System.Exception ex) {
 
+                trans.Commit ();
+            } catch (System.Exception) {
+                trans.Rollback ();
             }
 
         }

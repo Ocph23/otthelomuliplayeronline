@@ -24,6 +24,7 @@ namespace MainWebGame {
         public IRepository<User> Users { get { return new Repository<User> (this); } }
         public IRepository<Tantangan> Tantangan { get { return new Repository<Tantangan> (this); } }
         public IRepository<BantuanSolusi> BantuanSolusi { get { return new Repository<BantuanSolusi> (this); } }
+        public IRepository<HasilBermain> Scores { get { return new Repository<HasilBermain> (this); } }
         public IRepository<PeraturanModel> Peraturan { get { return new Repository<PeraturanModel> (this); } }
 
         public IEnumerable<dynamic> SelectDynamic (string sql) {

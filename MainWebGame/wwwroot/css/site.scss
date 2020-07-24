@@ -89,7 +89,7 @@ body {
 }
 
 .main {
-    height: 80vh;
+    height: 92vh;
     width: 100%;
     display: flex;
     background-color: burlywood;
@@ -111,10 +111,12 @@ body {
 }
 
 .mainSide {
-    padding: 15px;
+    padding: 20px;
     width: 80%;
     background-color: whitesmoke;
     color: black;
+    overflow-y: auto;
+    height: 100%;
 }
 
 .admin-peraturan {

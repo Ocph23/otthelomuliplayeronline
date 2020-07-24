@@ -10,14 +10,14 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Aturan</th>
-                <th scope="col" style="width: auto; text-align: end;">Aksi</th>
+                <th scope="col" style="width:160px;" class="text-center">Aksi</th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="item in datas">
                 <td scope="row">{{$index+1}}</td>
                 <td>{{item.keterangan}}</td>
-                <td style="width: auto; text-align: end;">
+                <td>
                     <button class="btn btn-warning" ng-click="selectItem(item)" data-toggle="modal"
                         data-target="#myModal">Edit</button>
                     <button class="btn btn-danger" ng-click="delete(item)">Hapus</button>

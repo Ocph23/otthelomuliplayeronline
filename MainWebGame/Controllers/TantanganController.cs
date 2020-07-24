@@ -31,9 +31,14 @@ namespace MainWebGame.Controllers {
                 var tantangan = db.Tantangan.Select ();
 
                 var result = from a in tantangan
+                join d in db.Scores.Select () on a.IdTantangan equals d.IdTantangan
                 join b in users on a.UserId equals b.IdUser
                 join c in users on a.LawanId equals c.IdUser
-                select new { UserScore = a.UserScore, LawanScore = a.LawanScore, Tanggal = a.Tanggal, Idtantangan = a.IdTantangan, User1 = b.PlayerName, User2 = c.PlayerName, Winner = a.UserScore >= a.LawanScore?b.PlayerName : c.PlayerName };
+                select new {
+                    IdUser = a.UserId, IdLawan = a.LawanId, UserScore = d.UserScore, LawanScore = d.LawanScore, Tanggal = a.Tanggal,
+                    Idtantangan = a.IdTantangan, User1 = b.PlayerName, User2 = c.PlayerName,
+                    Winner = d.UserScore >= d.LawanScore?b.PlayerName : c.PlayerName
+                };
 
                 return Ok (result.ToList ());
             } catch (System.Exception ex) {

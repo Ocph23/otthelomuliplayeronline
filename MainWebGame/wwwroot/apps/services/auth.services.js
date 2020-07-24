@@ -17,6 +17,7 @@ function AuthService($http, $q, StorageService, $state, helperServices, message)
 		profile: profile,
 		register: register,
 		getToken: getToken,
+		getUser: getUser,
 		updatePhotoProfile: updatePhotoProfile
 	};
 
@@ -149,6 +150,11 @@ function AuthService($http, $q, StorageService, $state, helperServices, message)
 	function getToken() {
 		var result = StorageService.getObject('user');
 		return result == null ? null : result.token;
+	}
+
+	function getUser() {
+		var result = StorageService.getObject('user');
+		return result == null ? null : result;
 	}
 
 	function userIsLogin() {

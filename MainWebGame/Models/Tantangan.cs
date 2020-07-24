@@ -20,10 +20,5 @@ namespace MainWebGame.Models {
         [DbColumn ("tanggal")]
         public DateTime Tanggal { get; set; }
 
-        [DbColumn ("skor_pemain")]
-        public int UserScore { get; set; }
-
-        [DbColumn ("skor_lawan")]
-        public int LawanScore { get; set; }
     }
 }
