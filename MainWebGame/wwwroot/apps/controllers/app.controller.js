@@ -8,7 +8,7 @@ angular
 	.controller('gameVsComputerController', gameVsComputerController)
 	.controller('gamePlayController', gamePlayController);
 
-function gameController($scope, $state, AuthService, helperServices, swangular, GameService) {
+function gameController($scope, $state, AuthService, PlayerService, helperServices, swangular, GameService) {
 	$scope.profile = {};
 
 	AuthService.profile().then(
@@ -31,6 +31,9 @@ function gameController($scope, $state, AuthService, helperServices, swangular, 
 		}
 	);
 	$scope.logoff = () => {
+		if (PlayerService.connection.connectionState == 'Connected') {
+			PlayerService.connection.stop();
+		}
 		AuthService.logOff();
 	};
 }
@@ -44,7 +47,7 @@ function gameHomeController($scope, PlayerService, $state, message, AuthService)
 			$scope.profile = x;
 			$scope.photos = x.photo;
 			$scope.userId = $scope.profile.idUser;
-			if (!PlayerService.connection) {
+			if (!PlayerService.connection || PlayerService.connection.connectionState == 'Disconnected') {
 				PlayerService.start();
 				PlayerService.connection.on('Users', (players) => {
 					$scope.$apply((x) => {

@@ -2,8 +2,17 @@ angular.module('app.useronline.conponent', []).component('useronline', {
 	bindings: {
 		player: '='
 	},
-	controller: function($scope, $state, PlayerService) {
+	controller: function($scope, $state, PlayerService, helperServices) {
 		$scope.Title = 'Invite';
+		setTimeout(() => {
+			if (!$scope.$ctrl.player.photo)
+				$scope.$apply((x) => {
+					$scope.$ctrl.player.photo = helperServices.url + '/images/noimage.png';
+				});
+			else {
+				$scope.$ctrl.player.photo = 'data:image/png;base64,' + $scope.$ctrl.player.photo;
+			}
+		}, 500);
 
 		$scope.play = () => {
 			//$state.go('game-play', { player: $scope.$ctrl.player });
