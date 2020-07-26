@@ -246,7 +246,7 @@ body {
 }
 
 .blackHistory {
-    background: rgb(101, 209, 39);
+    background: black;
     transform: rotateY(0deg);
 }
 
@@ -281,7 +281,7 @@ body {
 .table th {
     padding: 0.15rem;
     vertical-align: top;
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid #068704;
 }
 
 .historyBoard {
@@ -301,16 +301,16 @@ body {
                     height: 100%;
                     width: calc(100% / 8);
                     border: 0.1px #2cd6ec solid;
-                    background: #ffffff;
-                    box-shadow: inset 9px 9px 18px #b3b3b3, inset -9px -9px 18px #ffffff;
+                    background: #068704;
+                    box-shadow: inset 20px 20px 60px #057303, inset -20px -20px 60px #079b05;
                     .node {
                         width: 80%;
                         height: 80%;
                         margin: auto;
                         align-self: center;
                         border-radius: 50%;
-                        background: #595959;
-                        box-shadow: -6px 6px 12px #dfdfdf, 6px -6px 12px #949393;
+                        background: #068704;
+                        box-shadow: inset 20px 20px 60px #057303, inset -20px -20px 60px #079b05;
                     }
                 }
             }

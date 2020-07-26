@@ -548,7 +548,8 @@ function OthelloView(param) {
 		map.prevNum = 0;
 		map.key = [ 0, 0 ];
 		history = [];
-		//	update();
+		othello.findLocation(map);
+		history.push(map);
 		//othello.ai.printMap(map);
 	};
 
@@ -647,6 +648,20 @@ function OthelloView(param) {
 			if (k != 64 && nm[k] == 0) nm.frontier[k] = true;
 		}
 
+		var ne = m.next[n];
+		var l = ne.length;
+		for (var i = 0; i < l; i++) {
+			nm[ne[i]] = m.side;
+			zobrist.set(nm.key, 2, ne[i]);
+		}
+		if (m.side == 1) {
+			nm.black = m.black + l + 1;
+			nm.white = m.white - l;
+		} else {
+			nm.white = m.white + l + 1;
+			nm.black = m.black - l;
+		}
+		nm.space = 64 - nm.black - nm.white;
 		nm.side = -m.side;
 		nm.prevNum = m.nextNum;
 		zobrist.swap(nm.key);
@@ -664,14 +679,17 @@ function OthelloView(param) {
 
 	othello.go = function(n) {
 		aiRuning = false;
-		//var rev = map.next[n];
+		var rev = map.next[n];
 		if (map.space == 2) {
 			var a = 3;
 		}
 		map = othello.newMap(map, n);
-		//map.newRev = rev;
-		//map.newPos = n;
+		map.newRev = rev;
+		map.newPos = n;
+
+		othello.findLocation(map);
 		history.push(map);
+
 		// console.log(map.key);
 		//update();
 		//othello.ai.printMap(map);

@@ -40,7 +40,7 @@ namespace MainWebGame.Controllers {
                     if (item.PlayerName.ToLower () != "admin")
                         listResult.Add (new PlayerScore { Id = item.IdUser, PlayerName = item.PlayerName, Score = data.Sum (x => x.Score) });
                 }
-                return Ok (listResult);
+                return Ok (listResult.OrderByDescending (x => x.Score));
             } catch (System.Exception ex) {
 
                 return BadRequest (ex.Message);

@@ -24,7 +24,7 @@ function PlayerService($q, message, $state, AuthService) {
 			.start()
 			.then(function(x) {
 				service.connection.invoke('GetUsers');
-				setTimeout(() => {}, 2000);
+				setTimeout(() => {}, 500);
 			})
 			.catch(function(err) {
 				return console.error(err.toString());

@@ -283,14 +283,41 @@ function profileController($scope, PlayerService, PeraturanService, AuthService)
 						datasets: [
 							{
 								label: 'Score',
-								borderColor: 'rgb(255, 99, 132)',
+								borderColor: 'rgb(255, 193, 7)',
 								data: datas
 							}
 						]
 					},
 
 					// Configuration options go here
-					options: {}
+					options: {
+						legend: {
+							labels: {
+								fontColor: 'white',
+								fontSize: 18
+							}
+						},
+						scales: {
+							yAxes: [
+								{
+									ticks: {
+										fontColor: 'white',
+										fontSize: 12,
+										beginAtZero: true
+									}
+								}
+							],
+							xAxes: [
+								{
+									ticks: {
+										fontColor: 'white',
+										fontSize: 13,
+										beginAtZero: true
+									}
+								}
+							]
+						}
+					}
 				});
 
 				PeraturanService.getTantangan().then((x) => {
@@ -337,6 +364,7 @@ function profileController($scope, PlayerService, PeraturanService, AuthService)
 
 function generate(historyMain, id, m) {
 	g = document.createElement('div');
+	g.innerHTML = '';
 	g.setAttribute('id', 'board' + id);
 	g.setAttribute('class', 'historyBoard');
 	historyMain.appendChild(g);
@@ -361,9 +389,6 @@ function generate(historyMain, id, m) {
 	for (var i = 0; i < 64; i++) {
 		pieces[i].className = [ 'whiteHistory', '', 'blackHistory' ][m[i] + 1];
 	}
-
-	side[m.side].className = 'cbox side';
-	side[-m.side].className = 'cbox';
 }
 
 function generateHeader(historyMain, name) {
