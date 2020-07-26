@@ -20,19 +20,19 @@ function LoginController($scope, $state, AuthService, $stateParams, message) {
 	);
 
 	$scope.login = function(user) {
-		if (user.password != user.passwordConfirm) {
-			MessageChannel.error('Password Tidak Sama');
-		} else
-			AuthService.login(user).then((x) => {
-				$state.go(x.role.toLowerCase() + '-home');
-			});
+		AuthService.login(user).then((x) => {
+			$state.go(x.role.toLowerCase() + '-home');
+		});
 	};
 }
 
 function RegisterController($scope, $state, AuthService) {
 	$scope.register = function(user) {
-		AuthService.register(user).then((x) => {
-			$state.go('login', { username: user.userName });
-		});
+		if (user.password != user.passwordConfirm) {
+			message.error('Password Tidak Sama');
+		} else
+			AuthService.register(user).then((x) => {
+				$state.go('login', { username: user.userName });
+			});
 	};
 }
