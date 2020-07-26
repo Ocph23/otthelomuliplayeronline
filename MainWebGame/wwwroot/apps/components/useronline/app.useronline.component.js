@@ -15,11 +15,7 @@ angular.module('app.useronline.conponent', []).component('useronline', {
 		}, 500);
 
 		$scope.play = () => {
-			//$state.go('game-play', { player: $scope.$ctrl.player });
-
 			PlayerService.connection.invoke('InviteOpponent', $scope.$ctrl.player.userId);
-
-			//OnRejectInvite
 			PlayerService.connection.on('OnRejectInvite', (param) => {
 				if ($scope.$ctrl.player.userId == param) {
 					$scope.$apply((x) => {
