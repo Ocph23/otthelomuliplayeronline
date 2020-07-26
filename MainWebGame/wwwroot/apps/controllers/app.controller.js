@@ -10,12 +10,7 @@ angular
 
 function gameController($scope, $state, AuthService, helperServices, swangular, GameService) {
 	$scope.profile = {};
-	setTimeout(() => {
-		var img = document.getElementById('photoProfile');
-		if (img) {
-			img.src = helperServices.url + '/images/noimage.png';
-		}
-	}, 100);
+
 	AuthService.profile().then(
 		(x) => {
 			if (x.role.toLowerCase() != 'player') {
@@ -27,10 +22,7 @@ function gameController($scope, $state, AuthService, helperServices, swangular, 
 				$scope.photox = 'data:image/png;base64,' + x.photo;
 			} else {
 				setTimeout(() => {
-					var img = document.getElementById('photoProfile');
-					if (img) {
-						img.src = helperServices.url + '/images/noimage.png';
-					}
+					$scope.photox = helperServices.url + '/images/noimage.png';
 				}, 100);
 			}
 		},

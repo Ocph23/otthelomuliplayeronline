@@ -4,7 +4,7 @@ namespace MainWebGame.Models {
     [TableName ("hasil_bermain")]
     public class HasilBermain {
 
-        [DbColumn ("id_tantangan")]
+        [DbColumn ("idtantangan")]
         public int IdTantangan { get; set; }
 
         [DbColumn ("skor_pemain")]

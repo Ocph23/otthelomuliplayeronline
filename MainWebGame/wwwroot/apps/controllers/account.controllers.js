@@ -26,9 +26,14 @@ function LoginController($scope, $state, AuthService, $stateParams, message) {
 	};
 }
 
-function RegisterController($scope, $state, AuthService) {
+function RegisterController($scope, $state, AuthService, helperServices, message) {
+	$scope.model = {};
+	$scope.model.photox = helperServices.url + '/images/noimage.png';
 	$scope.register = function(user) {
-		if (user.password != user.passwordConfirm) {
+		if (user.photox) {
+			user.photo = user.photox.split(',')[1];
+		}
+		if (user.password != user.confirmPassword) {
 			message.error('Password Tidak Sama');
 		} else
 			AuthService.register(user).then((x) => {

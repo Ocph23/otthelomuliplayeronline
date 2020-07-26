@@ -21,16 +21,20 @@
             <label id="playerSide2">{{side2}}</label>
         </div>
     </div>
-    <div style="--aspect-ratio:1/1;">
-        <div id="chessboard"></div>
-    </div>
-    <div class="bottom-menu">
-        <button id="play" ng-click="resign()" class="btn btn-danger">Menyerah</button>
-        <!--div id="back" class="button">Retract</div-->
-        <button id="2d3d" class="btn btn-primary">3D</button>
-        <button id="ai" ng-disabled="mePlay" class="btn btn-warning" ng-click="AiPlay()">Solusi</button>
-        <button id="btnHistory" class="btn btn-info" data-toggle="modal" data-target="#history"
-            ng-click="showHistory()">History</button>
+    <div style="display:flex; flex-direction: column">
+        <div id="chessboard">
+            <table class="boardtable" id="idTable"></table>
+
+        </div>
+        <div class="bottom-menu" style="margin: 5px;">
+            <button id="play" ng-click="resign()" class="btn btn-danger">Menyerah</button>
+            <!--div id="back" class="button">Retract</div-->
+            <button id="2d3d" class="btn btn-primary">3D</button>
+            <button id="ai" ng-disabled="!mePlay" class="btn btn-warning" ng-click="AiPlay()">Solusi</button>
+            <button id="btnHistory" class="btn btn-info" data-toggle="modal" data-target="#history"
+                ng-click="showHistory()">History</button>
+            <!--div-- id="explain" class="button">About</!--div-->
+        </div>
     </div>
 </div>
 

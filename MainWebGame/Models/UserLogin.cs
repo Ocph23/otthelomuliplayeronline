@@ -14,5 +14,7 @@ namespace MainWebGame.Models {
 
         public Role Role { get; set; }
 
+        public byte[] Photo { get; set; }
+
     }
 }

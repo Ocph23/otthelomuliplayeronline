@@ -19,10 +19,19 @@
                 <label>Confirm Password</label>
                 <input type="password" class="form-control" ng-model="model.confirmPassword">
             </div>
+
+            <div class="form-group">
+                <div class="user-avatar" choose-filex>
+                    <input file-input id="file" ng-model="model.photox" type="file" hidden>
+                    <img style="text-align: center; height: 150px; width: 150px;" id="photoProfile"
+                        ng-src="{{model.photox}}">
+                </div>
+            </div>
             <div class="form-group">
                 <label></label>
                 <button class="btn btn-success pull-right" type="submit">Register</button>
             </div>
+
 
             <div>
                 <label>Punya Akun ? <a ui-sref="login">Login</a></label>

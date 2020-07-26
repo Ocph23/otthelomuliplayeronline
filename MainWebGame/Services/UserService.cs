@@ -64,6 +64,7 @@ namespace MainWebGame.Services {
 
                 var code = new Random ().Next (10000, 99999).ToString ();
                 var user = new User {
+                    Photo = userRegister.Photo,
                     UserName = userRegister.username, PlayerName = userRegister.PlayerName, Password = Helper.GetMd5Hash (userRegister.Password),
                     Role = userRegister.Role
                 };

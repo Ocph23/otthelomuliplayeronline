@@ -67,7 +67,7 @@ namespace MainWebGame {
                 if (oppConnection.Playing) {
                     throw new SystemException ($"{oppConnection.PlayerName} sedang bermain");
                 }
-                var game = new Game { Owner = myConnection, Opponent = oppConnection, Tanggal = DateTime.Now };
+                var game = new Game { Owner = oppConnection, Opponent = myConnection, Tanggal = DateTime.Now };
                 Games.Add (game);
                 await Start (game);
             } catch (System.Exception ex) {
@@ -146,7 +146,7 @@ namespace MainWebGame {
                 }
 
                 trans.Commit ();
-            } catch (System.Exception) {
+            } catch (System.Exception ex) {
                 trans.Rollback ();
             }
 
@@ -172,12 +172,12 @@ namespace MainWebGame {
         }
 
         public async Task UpdateGame (string gameId, int ownerPoint, int oppPoint) {
-            // await Task.Delay (500);
-            // var savedgame = Games.Where (x => x.GameId == gameId).FirstOrDefault ();
-            // if (savedgame != null) {
-            //     savedgame.Opponent.Point = oppPoint;
-            //     savedgame.Owner.Point = ownerPoint;
-            // }
+            await Task.Delay (500);
+            var savedgame = Games.Where (x => x.GameId == gameId).FirstOrDefault ();
+            if (savedgame != null) {
+                savedgame.Opponent.Point = oppPoint;
+                savedgame.Owner.Point = ownerPoint;
+            }
         }
 
         //users Connections
