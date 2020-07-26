@@ -129,7 +129,7 @@ namespace MainWebGame {
                 };
                 var cons = GetConnectionByGame (game);
                 await Clients.Client (cons.Item1).SendAsync ("GameOver", game);
-                await Clients.Client (cons.Item2).SendAsync ("OnResign", game);
+                await Clients.Client (cons.Item2).SendAsync ("GameOver", game);
 
                 tantangan.IdTantangan = db.Tantangan.InsertAndGetLastID (tantangan);
                 db.Scores.Insert (new HasilBermain {
