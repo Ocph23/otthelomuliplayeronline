@@ -211,7 +211,8 @@ namespace MainWebGame {
                     connections.Remove (item);
                 }
             }
-            await Clients.Others.SendAsync ("OnOfflinePlayer", conid);
+            var userId = await Context.User.UserId ();
+            await Clients.Others.SendAsync ("OnOfflinePlayer", userId);
             await base.OnDisconnectedAsync (exception);
         }
         public async Task GetUsers () {

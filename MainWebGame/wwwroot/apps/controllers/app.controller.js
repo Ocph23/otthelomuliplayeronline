@@ -72,9 +72,9 @@ function gameHomeController($scope, PlayerService, $state, message, AuthService)
 					}, 2000);
 				});
 
-				PlayerService.connection.on('OnOfflinePlayer', (connectionId) => {
+				PlayerService.connection.on('OnOfflinePlayer', (userId) => {
 					$scope.$apply((x) => {
-						userExist = $scope.playerService.players.find((x) => x.connectionId == connectionId);
+						userExist = $scope.playerService.players.find((x) => x.userId == userId);
 						if (userExist) {
 							var index = $scope.playerService.players.indexOf(userExist);
 							$scope.playerService.players.splice(index, 1);
@@ -121,42 +121,7 @@ function gameHomeController($scope, PlayerService, $state, message, AuthService)
 	};
 }
 
-function gamePlayController(
-	$scope,
-	swangular,
-	GameService,
-	$transitions,
-	swangular,
-	$state,
-	$stateParams,
-	AuthService
-) {
-	$transitions.onStart(
-		{},
-		function(transitions) {
-			if (transitions.from().name == 'game-play') {
-				return swangular
-					.swal({
-						title: 'Yakin ?',
-						text: 'Yakin Meninggal Kan Permainan ?',
-						type: 'warning',
-						showCancelButton: true,
-						confirmButtonText: 'Ya',
-						cancelButtonText: 'Batal',
-						reverseButtons: true
-					})
-					.then((result) => {
-						if (result.value) {
-							return true;
-						} else {
-							return false;
-						}
-					});
-			}
-		},
-		(err) => {}
-	);
-
+function gamePlayController($scope, GameService, $state, $stateParams, AuthService) {
 	AuthService.profile().then(
 		(x) => {
 			if (x.role.toLowerCase() != 'player') {
@@ -213,31 +178,7 @@ function gamePlayController(
 	};
 }
 
-function gameVsComputerController($scope, $state, $transitions, swangular, GameService, $state, AuthService, message) {
-	$transitions.onStart(
-		{},
-		function(transitions) {
-			if (transitions.from().name == 'game-vs-ai') {
-				return swangular
-					.swal({
-						title: 'Yakin ?',
-						text: 'Yakin Meninggal Kan Permainan ?',
-						type: 'warning',
-						showCancelButton: true,
-						confirmButtonText: 'Ya',
-						cancelButtonText: 'Batal',
-						reverseButtons: true
-					})
-					.then((result) => {
-						if (result.value) {
-						} else {
-							return false;
-						}
-					});
-			}
-		},
-		(err) => {}
-	);
+function gameVsComputerController($scope, $state, GameService, $state, AuthService) {
 	$scope.model = {};
 
 	AuthService.profile().then((x) => {

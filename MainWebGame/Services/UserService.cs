@@ -34,11 +34,11 @@ namespace MainWebGame.Services {
             try {
 
                 if (db.Users.Select ().Count () <= 0) {
-                    await Register (new UserRegister { username = "Admin", email = "admin@gmail.com", password = "Admin", Role = Role.Admin });
+                    await Register (new UserRegister { username = "Admin", Password = "Admin", Role = Role.Admin });
                     throw new SystemException ("Anda Tidak Memiliki Akses");
                 }
 
-                var user = db.Users.Where (x => x.UserName == username || x.email == username).FirstOrDefault ();
+                var user = db.Users.Where (x => x.UserName == username).FirstOrDefault ();
                 if (user == null) {
                     throw new SystemException ("Anda Tidak Memiliki Akses");
                 }
@@ -64,8 +64,8 @@ namespace MainWebGame.Services {
 
                 var code = new Random ().Next (10000, 99999).ToString ();
                 var user = new User {
-                    UserName = userRegister.username, PlayerName = userRegister.PlayerName, Password = Helper.GetMd5Hash (userRegister.password),
-                    Role = userRegister.Role, email = userRegister.email, status = true
+                    UserName = userRegister.username, PlayerName = userRegister.PlayerName, Password = Helper.GetMd5Hash (userRegister.Password),
+                    Role = userRegister.Role
                 };
                 user = user.CreateUser (db);
                 var token = user.GenerateToken (_appSettings.Secret);
@@ -106,7 +106,6 @@ namespace MainWebGame.Services {
         public static string GenerateToken (this User user, string secretCode) {
             var claims = new List<Claim> {
                 new Claim (JwtRegisteredClaimNames.Sub, user.IdUser.ToString ()),
-                new Claim (JwtRegisteredClaimNames.Sub, user.email),
                 new Claim (JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim (JwtRegisteredClaimNames.Jti, Guid.NewGuid ().ToString ()),
                 new Claim (ClaimTypes.NameIdentifier, user.IdUser.ToString ())

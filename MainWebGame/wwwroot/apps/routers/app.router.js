@@ -43,9 +43,6 @@ angular.module('app.router', [ 'ui.router', 'admin.router' ]).config(function($s
 			parent: 'player',
 			params: { data: null },
 
-			onExit: function(trans, state) {
-				console.log('Leaving ' + state.name);
-			},
 			controller: 'gamePlayController',
 			templateUrl: './apps/views/games/play.html'
 		})
@@ -61,10 +58,10 @@ angular.module('app.router', [ 'ui.router', 'admin.router' ]).config(function($s
 		})
 		.state('login', {
 			url: '/login',
-            parent: 'account',
-            params: {
-                username:null
-            },
+			parent: 'account',
+			params: {
+				username: null
+			},
 			controller: 'LoginController',
 			templateUrl: './apps/views/accounts/signin.html'
 		});

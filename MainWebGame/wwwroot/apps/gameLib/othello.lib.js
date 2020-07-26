@@ -254,19 +254,6 @@ function Othello(param) {
 	};
 
 	othello.timer = null;
-	othello.timerStart = function() {
-		othello.counterTime = 60;
-		othello.timer = setInterval(timeCounter, 1000);
-	};
-	function timeCounter() {
-		if (othello.counterTime == 0) {
-			clearInterval(othello.timer);
-			othello.counterTime = 0;
-			//othello.connection.invoke('Resign');
-		}
-		var t = document.getElementById('time');
-		t.innerHTML = othello.counterTime--;
-	}
 
 	othello.board.toDown = othello.goChess;
 }

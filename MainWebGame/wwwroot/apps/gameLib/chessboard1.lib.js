@@ -15,14 +15,13 @@ function Chessboard() {
 	}
 
 	chessBoard.create = function() {
-		var obj = document.getElementById('chessboard');
-		var html = '<table >';
+		var obj = document.getElementById('idTable');
+		var html = '';
 		for (var i = 0; i < 8; i++) {
 			html += '<tr>';
 			for (var j = 0; j < 8; j++) html += "<td class='bg" + (j + i) % 2 + "'><div></div></td>";
 			html += '</tr>';
 		}
-		html += '</table>';
 		obj.innerHTML = html;
 		pieces = obj.getElementsByTagName('div');
 		bindEvent(obj.getElementsByTagName('td'));

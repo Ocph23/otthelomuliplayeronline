@@ -3,7 +3,7 @@ angular
 	.controller('LoginController', LoginController)
 	.controller('RegisterController', RegisterController);
 
-function LoginController($scope, $state, AuthService, $stateParams) {
+function LoginController($scope, $state, AuthService, $stateParams, message) {
 	if ($stateParams.username) {
 		setTimeout((x) => {
 			$scope.model = { username: '', password: '' };
@@ -20,9 +20,12 @@ function LoginController($scope, $state, AuthService, $stateParams) {
 	);
 
 	$scope.login = function(user) {
-		AuthService.login(user).then((x) => {
-			$state.go(x.role.toLowerCase() + '-home');
-		});
+		if (user.password != user.passwordConfirm) {
+			MessageChannel.error('Password Tidak Sama');
+		} else
+			AuthService.login(user).then((x) => {
+				$state.go(x.role.toLowerCase() + '-home');
+			});
 	};
 }
 

@@ -21,14 +21,8 @@ namespace MainWebGame.Models {
     [DbColumn ("role")]
     public Role Role { get; set; }
 
-    [DbColumn ("email")]
-    public string email { get; set; }
-
     [DbColumn ("photo")]
     public byte[] Photo { get; set; }
-
-    [DbColumn ("konfirmasi_email")]
-    public bool status { get; set; }
 
     public string Token { get; set; }
 

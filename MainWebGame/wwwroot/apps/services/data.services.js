@@ -18,13 +18,13 @@ function PlayerService($q, message, $state, AuthService) {
 				accessTokenFactory: () => AuthService.getToken()
 			})
 			.configureLogging(signalR.LogLevel.Information)
+			.withAutomaticReconnect()
 			.build();
 		service.connection
 			.start()
-			.then(function() {
-				setTimeout(() => {
-					service.connection.invoke('GetUsers');
-				}, 1000);
+			.then(function(x) {
+				service.connection.invoke('GetUsers');
+				setTimeout(() => {}, 2000);
 			})
 			.catch(function(err) {
 				return console.error(err.toString());
@@ -49,7 +49,24 @@ function PlayerService($q, message, $state, AuthService) {
 	return service;
 }
 
-function GameService($http, PlayerService, $state, $q) {
+function GameService($http, PlayerService, $state, $q, $transitions) {
+	$transitions.onStart(
+		{},
+		function(transitions) {
+			var name = transitions.from().name;
+			if (name == 'game-vs-ai' || name == 'game-play') {
+				var result = confirm('Yakin MeninggalKan Permainan ? ');
+				if (result && name == 'game-play') {
+					service.resign();
+				}
+
+				return result;
+			} else {
+				return true;
+			}
+		},
+		(err) => {}
+	);
 	var service = {};
 	service.mePlay = null;
 	var othe = null;
@@ -143,12 +160,9 @@ function GameService($http, PlayerService, $state, $q) {
 		if (othe.pion == -1) {
 			var chessB = document.getElementById('chessboard');
 			chessB.className = 'opponent';
-		} else {
-			othe.timerStart();
 		}
 
 		othe.aiSide = othe.pion == 1 ? -1 : 1;
-
 		if (othe.aiSide) {
 			othe.mePlay = false;
 		} else {

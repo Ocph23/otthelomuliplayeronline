@@ -1,72 +1,54 @@
 body {
-    background-color: #302e43;
+    background-image: linear-gradient(to right top, #051937, #11355a, #1a547f, #2075a5, #2298cb);
     color: white !important;
 }
 #desk {
     top: 5px;
     margin: auto;
     position: relative;
-    width: 80%;
-    height: 100%;
+    width: 60%;
 }
 
 #chessboard {
-    position: absolute;
-    background: rgba(76, 224, 8, 0.76);
-    height: 71%;
+    background-color: rgb(29, 124, 17);
+    position: relative;
     width: 100%;
+    padding-top: 100%;
+}
 
-    table {
-        position: relative;
-        height: 100%;
-        width: 100%;
-        tbody {
-            tr {
-                height: calc(100% / 8);
-                background-color: yellowgreen;
+.boardtable {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    tbody {
+        tr {
+            height: calc(100% / 8);
+            background-color: yellowgreen;
+            display: flex;
+            align-self: stretch;
+            td {
                 display: flex;
-                align-self: stretch;
-                td {
-                    display: flex;
-                    height: 100%/8;
-                    width: calc(100% / 8);
-                    border: 0.3px #111111 solid;
+                height: 100%/8;
+                width: calc(100% / 8);
+                border: 0.3px #111111 solid;
+                background: #068704;
+                box-shadow: inset 20px 20px 60px #057303, inset -20px -20px 60px #079b05;
+                .node {
+                    width: 50%;
+                    height: 50%;
+                    margin: auto;
+                    align-self: center;
+                    border-radius: 50%;
                     background: #068704;
-                    box-shadow: inset 20px 20px 60px #057303, inset -20px -20px 60px #079b05;
-                    .node {
-                        width: 50%;
-                        height: 50%;
-                        margin: auto;
-                        align-self: center;
-                        border-radius: 50%;
-                        background: #068704;
-                        box-shadow: -6px 6px 12px #068704, 6px -6px 12px #068704;
-                    }
+                    box-shadow: -6px 6px 12px #068704, 6px -6px 12px #068704;
                 }
             }
         }
-    }
-}
-
-@media (min-width: 768px) {
-    #desk {
-        width: 60%;
-        height: 90%;
-    }
-
-    #chessboard {
-        height: 70%;
-    }
-}
-
-@media (min-width: 1024px) {
-    #desk {
-        width: 50%;
-        height: 90%;
-    }
-
-    #chessboard {
-        height: 70%;
     }
 }
 
@@ -115,6 +97,24 @@ body {
     }
 }
 
+@media (min-width: 600px) {
+    #desk {
+        width: 75%;
+    }
+}
+
+@media (min-width: 768px) {
+    #desk {
+        width: 60%;
+    }
+}
+
+@media (min-width: 960px) {
+    #desk {
+        width: 45%;
+    }
+}
+
 .prompt {
     width: 14px;
     height: 14px;
@@ -127,7 +127,7 @@ body {
 .bottom-menu {
     display: flex;
     justify-content: center;
-    position: absolute;
+    position: relative;
     bottom: 0px;
     width: 100%;
 }
@@ -154,7 +154,7 @@ body {
     padding: 10px;
     width: 100%;
     align-items: center;
-    background-color: #302e43;
+    background: linear-gradient(to right, #55517e, #494768, #3d3d53, #33333e, #29292a);
     border-bottom: 0.1px #383648 solid;
     .user-avatar {
         img {
