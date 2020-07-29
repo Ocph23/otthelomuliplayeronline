@@ -1,6 +1,11 @@
+html {
+    height: 100vh;
+}
 body {
-    background-image: linear-gradient(to right top, #051937, #11355a, #1a547f, #2075a5, #2298cb);
+    // background-color: linear-gradient(to right, #051937, #11355a, #1a547f, #2075a5, #2298cb);
+    background: linear-gradient(90deg, #092755 0%, #1a547f 35%, #2298cb 100%);
     color: white !important;
+    height: auto;
 }
 #desk {
     top: 5px;
@@ -286,10 +291,9 @@ body {
 
 .historyBoard {
     flex: 50%;
-    height: 400px;
+    height: 200px;
     margin: 10px;
     table {
-        height: 100%;
         tbody {
             tr {
                 height: calc(100% / 8);
@@ -300,7 +304,7 @@ body {
                     display: flex;
                     height: 100%;
                     width: calc(100% / 8);
-                    border: 0.1px #2cd6ec solid;
+                    border: 0.1px #929292 solid;
                     background: #068704;
                     box-shadow: inset 20px 20px 60px #057303, inset -20px -20px 60px #079b05;
                     .node {

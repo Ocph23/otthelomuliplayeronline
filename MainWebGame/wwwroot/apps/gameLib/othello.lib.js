@@ -58,12 +58,14 @@ function Othello(param) {
 			setTimeout(update, 300);
 			return;
 		}
-		if (aiAuto) {
-			aiRuning = true;
-			param.mePlay(false);
-			setTimeout(aiRun, 300);
-		} else {
+
+		if (param.pion == map.side) {
+			aiRuning = false;
 			param.mePlay(true);
+		} else {
+			param.mePlay(false);
+			aiRuning = true;
+			setTimeout(aiRun, 300);
 		}
 	}
 
@@ -124,36 +126,6 @@ function Othello(param) {
 				lk++;
 			}
 			if (i == 64 || m[i] != m.side) la -= lk;
-		}
-		m.nextIndex = [];
-		m.next = [];
-		var hist = othello.ai.history[m.side == 1 ? 0 : 1][m.space];
-		for (var i = 0; i < 60; i++) {
-			var fi = hist[i];
-			if (!m.frontier[fi]) continue;
-			var ta = [],
-				la = 0;
-			for (var j = 0; j < 8; j++) is(fi, j);
-			if (la > 0) {
-				if (la != ta.length) ta = ta.slice(0, la);
-				m.next[fi] = ta;
-				m.nextIndex.push(fi);
-			}
-		}
-		m.nextIndex.sort(function(a, b) {
-			return a - b;
-		});
-		m.nextNum = m.nextIndex.length;
-	};
-
-	othello.findLocationX = function(m) {
-		function is(i, j) {
-			var lk = 0;
-			while ((i = othello.dire(i, j)) != 64 && m[i] == m.side) {
-				ta[la++] = i;
-				lk++;
-			}
-			if (i == 64 || m[i] != -m.side) la -= lk;
 		}
 		m.nextIndex = [];
 		m.next = [];
@@ -344,6 +316,12 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 			othello.game.owner.point,
 			othello.game.opponent.point
 		);
+
+		if (othello.pion == map.side) {
+			mePlayEvent(true);
+		} else {
+			mePlayEvent(false);
+		}
 	}
 
 	function aiRun() {
@@ -360,6 +338,7 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 	}
 
 	function gameOver() {
+		othello.timer = null;
 		othello.connection.invoke('GameOver', othello.game);
 		var playerSide1 = document.getElementById('playerSide1');
 		var playerSide2 = document.getElementById('playerSide2');
@@ -473,10 +452,6 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 		map.newRev = rev;
 		map.newPos = n;
 		update();
-		setTimeout(() => {
-			othello.mePlay = !othello.mePlay;
-			mePlayEvent(othello.mePlay);
-		}, 200);
 	};
 
 	othello.AiGo = function() {

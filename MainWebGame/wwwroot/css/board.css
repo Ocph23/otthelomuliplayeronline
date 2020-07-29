@@ -1,7 +1,12 @@
+html {
+  height: 100vh;
+}
+
 body {
-  background-image: -webkit-gradient(linear, left bottom, right top, from(#051937), color-stop(#11355a), color-stop(#1a547f), color-stop(#2075a5), to(#2298cb));
-  background-image: linear-gradient(to right top, #051937, #11355a, #1a547f, #2075a5, #2298cb);
+  background: -webkit-gradient(linear, left top, right top, from(#092755), color-stop(35%, #1a547f), to(#2298cb));
+  background: linear-gradient(90deg, #092755 0%, #1a547f 35%, #2298cb 100%);
   color: white !important;
+  height: auto;
 }
 
 #desk {
@@ -330,12 +335,8 @@ body {
   -webkit-box-flex: 50%;
       -ms-flex: 50%;
           flex: 50%;
-  height: 400px;
+  height: 200px;
   margin: 10px;
-}
-
-.historyBoard table {
-  height: 100%;
 }
 
 .historyBoard table tbody tr {
@@ -354,7 +355,7 @@ body {
   display: flex;
   height: 100%;
   width: calc(100% / 8);
-  border: 0.1px #2cd6ec solid;
+  border: 0.1px #929292 solid;
   background: #068704;
   -webkit-box-shadow: inset 20px 20px 60px #057303, inset -20px -20px 60px #079b05;
           box-shadow: inset 20px 20px 60px #057303, inset -20px -20px 60px #079b05;

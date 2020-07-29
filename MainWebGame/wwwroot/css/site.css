@@ -58,12 +58,7 @@ button.accept-policy {
   -------------------------------------------------- */
 html {
   position: relative;
-  min-height: 100%;
-}
-
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 10px;
+  max-height: 100%;
 }
 
 .footer {
@@ -80,7 +75,7 @@ body {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  height: 90vh;
+  height: 80vh;
 }
 
 .account-panel .account-main {

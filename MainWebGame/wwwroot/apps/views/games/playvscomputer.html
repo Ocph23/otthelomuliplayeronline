@@ -34,6 +34,7 @@
                 <button id="ai" ng-disabled="!mePlay" class="btn btn-warning" ng-click="AiPlay()">Solusi</button>
                 <button id="btnHistory" class="btn btn-info" data-toggle="modal" data-target="#history"
                     ng-click="showHistory()">History</button>
+                <button class="btn btn-info" data-toggle="modal" data-target="#algoHistory">Algo</button>
                 <!--div-- id="explain" class="button">About</!--div-->
             </div>
         </div>
@@ -65,25 +66,76 @@
     </div>
 </div>
 
-
-
-<div class="modal fade modalHistory" id="history" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog  modal-xl" role="document">
+<div class="modal" tabindex="-1" id="algoHistory" role="dialog">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div id="historyMain" style="max-height: 90vh; overflow: scroll;">
+            <div class="modal-header">
+                <h5 class="modal-title">Proses Algoritma</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-content">
+                <div style="height: 100vh; overflow-y: auto;">
+                    <div class="algoritmaView" id="algoritmaView"></div>
+                </div>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" id="history" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Proses Algoritma</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="historyMain"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
 
-
 <style>
+    .algoritmaView {
+        width: 250px;
+        height: 100%;
+        color: black;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .topLabel {
+        margin-left: 10px;
+        margin-top: 20px;
+        font-size: 12px;
+    }
+
+    .bottomLabel {
+        margin-left: 10px;
+        margin-bottom: 20px;
+        font-size: 12px;
+    }
+
+    .middleLabel {
+        margin-left: 10px;
+        font-size: 12px;
+    }
+
+
     #ai:disabled {
         background-color: rgb(190, 188, 188);
     }

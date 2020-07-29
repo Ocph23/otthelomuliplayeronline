@@ -173,17 +173,16 @@ function AI(othe) {
 
 		var fr = frontier; // evaluateFor == "X" ? frontierX : frontierO;
 
-		console.log('Frontier =' + fr);
-		console.log('Mobility  =' + m.nextNum, ' - ', m.nextIndex);
-		console.log('Corner  =' + corner);
-		console.log('Mobility - Fronteir + Corner  =', m.nextNum - fr + corner);
+		generateText('Frontier =' + fr, 'top');
+		generateText('Mobility  =' + m.nextNum, ' - ', m.nextIndex);
+		generateText('Corner  =' + corner);
+		generateText('Mobility - Fronteir + Corner  =' + (m.nextNum - fr + corner));
 
 		var rv = m.nextNum - fr + corner;
-		//oo.printMap(m);
-		console.log('Analisa For : ' + evaluateFor + ' value = ' + rv + '\r\n\r\n');
-		if (rv > 50) {
-			console.log('%c Oh my heavens! ', 'background: #222; color: #bada55', 'more text');
-		}
+		generateText('Analisa For : ' + evaluateFor + ' value = ' + rv);
+		// if (rv > 50) {
+		// 	console.log('%c Oh my heavens! ', 'background: #222; color: #bada55', 'more text');
+		// }
 
 		return rv;
 	}
@@ -197,20 +196,21 @@ function AI(othe) {
 	Max = Infinity;
 	Min = -Infinity;
 	aiHistory = [];
+	labelId = 1;
+	bestMove = null;
 
 	function MinMax(map, deep, isMax, alpha, beta) {
 		othe.findLocation(map);
 		if (deep == 2) {
-			console.log('Evaluate Map For ');
-			oo.printMap(map);
+			generateText('Evaluate Map For ', 'top');
+			generateMap('id' + labelId++, map);
 			var e = evaluation(map);
 			const returnedTarget = Object.assign([], map);
 			returnedTarget.side = map.side == 1 ? -1 : 1;
 			othe.findLocation(returnedTarget);
 			var f = evaluation(returnedTarget);
-
 			var result = map.side == -1 ? e - f : f - e;
-			console.log('Total Evaluasi =', result, '\r\n\n');
+			generateText('Total Evaluasi =' + result, 'bottom');
 			return result;
 		}
 
@@ -219,39 +219,41 @@ function AI(othe) {
 			for (var i = 0; i < map.nextIndex.length; i++) {
 				var newMap = othe.newMap(map, map.nextIndex[i]);
 				newMap.MapKey = map.nextIndex[i];
-				console.log('\n\nV=', best, ' |alpha=', alpha, ' |beta=', beta);
-				oo.printMap(newMap);
+				generateText('MAX V=' + best + ' | alpha=' + alpha + ' | beta=' + beta, 'top');
+				generateMap('max' + labelId++, newMap);
 				val = MinMax(newMap, deep + 1, false, alpha, beta);
 				best = Math.max(best, val);
 				alpha = Math.max(alpha, best);
-
-				if (beta <= alpha) {
-					console.log('Prune', val, '\n\n ');
+				if (alpha == Infinity) {
+					bestMove = newMap.MapKey;
 					break;
+				}
+				if (beta <= alpha) {
+					generateText('Prune : ' + val, 'top');
+					break;
+				} else if (alpha == Infinity || (alpha != val && val > alpha)) {
+					bestMove = newMap.MapKey;
 				}
 			}
 
 			return best;
 		} else {
 			let best = Max;
-
 			for (var i = 0; i < map.nextIndex.length; i++) {
 				var newMap = othe.newMap(map, map.nextIndex[i]);
 				newMap.MapKey = map.nextIndex[i];
-				console.log('\n\n V=', best, ' |alpha=', alpha, ' |beta=', beta);
-				oo.printMap(newMap);
+				generateText('MIN  V=' + best + ' | alpha=' + alpha + ' | beta=' + beta, 'top');
+				generateMap('min' + labelId++, newMap);
 				val = MinMax(newMap, deep + 1, true, alpha, beta);
-
-				if (val < best) {
-					bestMove = map.MapKey;
-				}
 
 				best = Math.min(best, val);
 				beta = Math.min(beta, best);
 
 				if (beta <= alpha) {
-					console.log('Prune', val, '\n\n');
+					generateText('Prune : ' + val, 'top');
 					break;
+				} else if (alpha != best && (val < alpha || alpha == -Infinity)) {
+					bestMove = map.MapKey;
 				}
 			}
 
@@ -261,129 +263,20 @@ function AI(othe) {
 
 	oo.startSearch = function(m) {
 		var f = 0;
-		console.log('Start ...\n\r');
-
-		oo.printMap(m);
+		bestMove = null;
+		var hm = document.getElementById('algoritmaView');
+		hm.innerHTML = '';
+		generateText('Start ...');
+		generateMap('start' + labelId++, m);
 		m.MapKey = null;
 
 		var F = null;
 		othe.findLocation(m);
 		var best = MinMax(m, 0, true, -Infinity, Infinity);
 
-		console.log('BEST MOVE : ', bestMove);
+		generateText('BEST MOVE : ' + bestMove);
 		return bestMove;
 	};
-
-	function mtd(m, depth, f) {
-		var lower = -Infinity;
-		var upper = Infinity;
-		do {
-			var beta = f == lower ? f + 1 : f;
-			f = alphaBeta(m, depth, beta - 1, beta);
-			if (f < beta) upper = f;
-			else lower = f;
-		} while (lower < upper);
-		if (f < beta) {
-			console.log('F < beta：', f, beta);
-		} else console.log('F >= beta：', f, beta);
-		return f;
-	}
-
-	function alphaBeta(m, depth, alpha, beta) {
-		//	if (new Date().getTime() > outTime) throw new Error('time out');
-
-		var hv = hash.get(m.key, depth, alpha, beta);
-		if (hv !== false) {
-			console.log('retun rv : ', hv);
-			return hv;
-		}
-
-		if (m.space == 0) return outcome(m);
-		othe.findLocation(m);
-		if (m.nextNum == 0) {
-			if (m.prevNum == 0) {
-				return outcome(m);
-			}
-			othe.pass(m);
-			return -alphaBeta(m, depth, -beta, -alpha);
-		}
-
-		if (depth <= 0) {
-			var e = evaluation(m);
-			hash.set(m.key, e, depth, 0, null);
-			return e;
-		} else {
-			console.log('Turun Karena Belum Di Dasar Ke :', oo.outcomeDepth - depth + 1);
-			//  oo.printMap(m);
-		}
-
-		var hd = hash.getBest(m.key);
-		if (hd !== null) moveToHead(m.nextIndex, hd);
-
-		var hist = oo.history[m.side == 1 ? 0 : 1][m.space];
-		var hashf = 1;
-		var bestVal = -Infinity;
-		var bestAct = null;
-		for (var i = 0; i < m.nextNum; i++) {
-			var n = m.nextIndex[i];
-			var newArray = othe.newMap(m, n);
-			var v = -alphaBeta(newArray, depth - 1, -beta, -alpha);
-			if (v > bestVal) {
-				bestVal = v;
-				bestAct = n;
-				if (v > alpha) {
-					alpha = v;
-					hashf = 0;
-					moveToUp(hist, n);
-					console.log('V Naik Ke Atas = ' + v, n - i);
-					printVAB(v, alpha, beta);
-					if (maxDepth == 0) {
-						var newArray = othe.newMap(m, n);
-						oo.printMap(newArray);
-					}
-				}
-				if (v >= beta) {
-					hashf = 2;
-					console.log('Stop For Prun ' + v + '>=' + beta);
-					printVAB(v, alpha, beta);
-					if (maxDepth == 0) {
-						var newArray = othe.newMap(m, n);
-						oo.printMap(newArray);
-					}
-					break;
-				}
-			} else {
-				var newArray = othe.newMap(m, n);
-				oo.printMap(newArray);
-				printVAB(v, alpha, beta);
-				console.log('Naik Dan Turun  = ' + v);
-			}
-		}
-		moveToHead(hist, bestAct);
-
-		hash.set(m.key, bestVal, depth, hashf, bestAct);
-
-		return bestVal;
-	}
-
-	function printVAB(v, a, b) {
-		console.log('v=', v, ' a=', a, ' b=', b, '\n\r');
-	}
-
-	function moveToHead(arr, n) {
-		//console.log('Move To Head : ' + n);
-		if (arr[0] == n) return;
-		var i = arr.indexOf(n);
-		arr.splice(i, 1);
-		arr.unshift(n);
-	}
-
-	function moveToUp(arr, n) {
-		if (arr[0] == n) return;
-		var i = arr.indexOf(n);
-		arr[i] = arr[i - 1];
-		arr[i - 1] = n;
-	}
 }
 
 function Transposition() {
@@ -556,7 +449,7 @@ function AIBackup(othe) {
 	function evaluation(m) {
 		var evaluateFor = m.side == 1 ? ' O ' : ' X ';
 		console.log('Evaluate Map For ' + evaluateFor);
-		oo.printMap(m);
+		generate('ev' + labelId++, m);
 		var corner = 0,
 			steady = 0,
 			uk = {};
@@ -592,7 +485,6 @@ function AIBackup(othe) {
 		console.log('Frontier =' + frontier);
 		console.log('Corner  =' + corner);
 		console.log('Mobility' + evaluateFor + '(' + m.nextNum + '-' + m.prevNum + ')  =' + (m.nextNum - m.prevNum));
-		//oo.printMap(m);
 		console.log('Analisa For : ' + m.side + ' value = ' + rv * m.side + '\r\n\r\n');
 
 		return rv * m.side;
@@ -721,4 +613,48 @@ function AIBackup(othe) {
 		arr[i] = arr[i - 1];
 		arr[i - 1] = n;
 	}
+}
+
+function generateMap(id, m) {
+	var hm = document.getElementById('algoritmaView');
+	g = document.createElement('div');
+	g.innerHTML = '';
+	g.setAttribute('id', 'board' + id);
+	g.setAttribute('class', 'historyBoard');
+	hm.appendChild(g);
+
+	var obj = document.getElementById('board' + id);
+	var html = "<table class='table historyTable' >";
+	for (var i = 0; i < 8; i++) {
+		html += '<tr>';
+		for (var j = 0; j < 8; j++) html += "<td class='bg" + (j + i) % 2 + "'><div></div></td>";
+		html += '</tr>';
+	}
+	html += '</table>';
+	obj.innerHTML = html;
+	pieces = obj.getElementsByTagName('div');
+	bindEvent(obj.getElementsByTagName('td'));
+	//piecesnum = document.getElementById('score').getElementsByTagName('span');
+
+	if (!m) {
+		var aaaa = 'test';
+	} else {
+		for (var i = 0; i < 64; i++) {
+			pieces[i].className = [ 'whiteHistory', '', 'blackHistory' ][m[i] + 1];
+		}
+	}
+}
+
+function generateText(text, marginOn) {
+	var hm = document.getElementById('algoritmaView');
+	g = document.createElement('div');
+	g.innerHTML = '';
+	if (marginOn == 'top') g.setAttribute('class', 'topLabel');
+	else if (marginOn == 'bottom') g.setAttribute('class', 'bottomLabel');
+	else g.setAttribute('class', 'middleLabel');
+
+	hm.appendChild(g);
+
+	var comment = '<span>' + text + '</span>';
+	g.innerHTML = comment;
 }
