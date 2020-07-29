@@ -105,21 +105,27 @@ function GameService($http, PlayerService, $state, $q, $transitions) {
 		}
 		othe.play();
 
-		othe.connection.on('OnPlay', function(n) {
+		othe.connection.on('OnPlay', function(n, ai) {
 			othe.mePlay = true;
-			othe.go(n);
+			othe.go(n, ai);
 			othe.timerStart();
 		});
 
 		othe.connection.on('OnResign', function(param) {
 			service.game = null;
+			clearInterval(othe.timer);
 			if (param == othe.pion) {
 				alert('You Lost');
 			} else {
 				alert('You Win');
 			}
-			$state.go('game-home');
+
+			$state.go('player-home');
 		});
+
+		othe.backHome = () => {
+			$state.go('player-home');
+		};
 
 		othe.connection.on('OnError', function(code, message) {
 			switch (code) {

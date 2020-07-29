@@ -337,6 +337,7 @@ body {
           flex: 50%;
   height: 200px;
   margin: 10px;
+  margin-bottom: 0px;
 }
 
 .historyBoard table tbody tr {
@@ -376,7 +377,7 @@ body {
 
 #Awal,
 #Akhir {
-  margin: 10px;
+  margin-bottom: 25px;
   color: black;
   text-align: center;
 }

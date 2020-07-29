@@ -321,6 +321,7 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 			mePlayEvent(true);
 		} else {
 			mePlayEvent(false);
+			clearInterval(othello.timer);
 		}
 	}
 
@@ -334,7 +335,7 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 			n = map.nextIndex[(Math.random() * map.nextIndex.length) >> 0];
 		}
 
-		othello.goChess(n);
+		othello.goChess(n, true);
 	}
 
 	function gameOver() {
@@ -357,6 +358,9 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 					? 'Draw!'
 					: map.black > map.white ? playerSide1.innerHTML + ' Menang!' : playerSide2.innerHTML + ' Menang!')
 		);
+
+		clearInterval(othello.timer);
+		othello.backHome();
 	}
 
 	othello.dire = (function() {
@@ -436,21 +440,24 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 		return nm;
 	};
 
-	othello.goChess = function(n) {
+	othello.goChess = function(n, ai) {
 		//history.push(map);
-		othello.connection.invoke('Play', othello.game.gameId, n);
+		othello.connection.invoke('Play', othello.game.gameId, n, ai);
 		othello.mePlay = false;
-		othello.go(n);
+		othello.go(n, ai);
 		if (othello.timer);
 		clearInterval(othello.timer);
 	};
 
-	othello.go = function(n) {
+	othello.go = function(n, ai) {
 		aiRuning = false;
 		var rev = map.next[n];
 		map = othello.newMap(map, n);
 		map.newRev = rev;
 		map.newPos = n;
+		if (ai) {
+			map.useAI = true;
+		}
 		update();
 	};
 
@@ -466,9 +473,11 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 
 	othello.timer = null;
 	othello.timerStart = function() {
+		if (othello.timer) clearInterval(othello.timer);
 		othello.counterTime = 60;
 		othello.timer = setInterval(timeCounter, 1000);
 	};
+
 	function timeCounter() {
 		if (othello.counterTime == 0) {
 			clearInterval(othello.timer);
@@ -476,7 +485,7 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 			othello.connection.invoke('Resign');
 		}
 		var t = document.getElementById('time');
-		t.innerHTML = othello.counterTime--;
+		if (othello.counterTime > 0) t.innerHTML = othello.counterTime--;
 	}
 
 	othello.connection = signalConnection;
@@ -643,16 +652,16 @@ function OthelloView(param) {
 		return nm;
 	};
 
-	othello.goChess = function(n) {
+	othello.goChess = function(n, ai) {
 		//history.push(map);
 		//othello.connection.invoke('Play', n);
 		console.log('Player Play :');
-		othello.go(n);
+		othello.go(n, ai);
 		if (othello.timer);
 		clearInterval(othello.timer);
 	};
 
-	othello.go = function(n) {
+	othello.go = function(n, ai) {
 		aiRuning = false;
 		var rev = map.next[n];
 		if (map.space == 2) {
@@ -661,6 +670,7 @@ function OthelloView(param) {
 		map = othello.newMap(map, n);
 		map.newRev = rev;
 		map.newPos = n;
+		if (ai) map.useAI = true;
 
 		othello.findLocation(map);
 		history.push(map);

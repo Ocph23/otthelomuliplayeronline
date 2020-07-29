@@ -97,23 +97,28 @@ namespace MainWebGame {
             }
         }
 
-        public async Task Play (string gameId, int n) {
+        public async Task Play (string gameId, int n, bool ai) {
             await Task.Delay (2000);
             var myId = await Context.User.UserId ();
             var game = Games.Where (x => x.GameId == gameId).FirstOrDefault ();
             if (game != null) {
-                game.History.Add (new BantuanSolusi { Akhir = n });
+                game.History.Add (new BantuanSolusi { Akhir = n, Solusi = ai });
                 var conns = GetConnectionByGame (game);
                 var conId = conns.Item1;
                 if (game.Owner.UserId == myId)
                     conId = conns.Item2;
-                await Clients.Client (conId).SendAsync ("OnPlay", n);
+                await Clients.Client (conId).SendAsync ("OnPlay", n, ai);
             }
         }
 
         public async Task GameOver (Game game) {
+            await Task.Delay (2000);
             var trans = db.BeginTransaction ();
             try {
+                if (game.History.Count <= 0) {
+                    var dataGame = Games.Where (x => x.GameId == game.GameId).FirstOrDefault ();
+                    game.History = dataGame.History;
+                }
                 if (game != null)
                     Games.Remove (game);
                 var userWin = game.Owner.PlayerName;

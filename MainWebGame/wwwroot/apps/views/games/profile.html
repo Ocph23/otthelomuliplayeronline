@@ -40,7 +40,7 @@
                     <td>{{item.user2}} ({{item.lawanScore}})</td>
                     <td>{{item.winner}}</td>
                     <td><button class="btn btn-warning" data-toggle="modal" data-target="#history"
-                            ng-click="getHistory(item.idtantangan)">History</button></td>
+                            ng-click="getHistory(item)">History</button></td>
                 </tr>
             </tbody>
         </table>
@@ -100,7 +100,7 @@
 
 <div class="modal fade modalHistory" id="history" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog  modal-xl" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-dark">Sejarah Permainan</h5>
@@ -109,7 +109,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div id="historyMain" style="max-height: 90vh; overflow: scroll;">
+                <div id="historyMain" style="max-height: 75vh; overflow: scroll;">
 
                 </div>
             </div>

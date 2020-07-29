@@ -8,7 +8,7 @@ function Chessboard() {
 		for (var i = 0; i < 64; i++)
 			(function(i) {
 				td[i].onclick = function() {
-					if (pieces[i].className == 'prompt') chessBoard.toDown(i);
+					if (pieces[i].className == 'prompt') chessBoard.toDown(i, false);
 				};
 			})(i);
 		td = undefined;

@@ -140,9 +140,11 @@ function gamePlayController($scope, GameService, $state, $stateParams, AuthServi
 	);
 
 	$scope.changeMePlay = (data) => {
-		$scope.$apply((x) => {
-			$scope.mePlay = data;
-		});
+		setTimeout(() => {
+			$scope.$apply((x) => {
+				$scope.mePlay = data;
+			});
+		}, 100);
 	};
 
 	$scope.resign = () => {
@@ -153,7 +155,9 @@ function gamePlayController($scope, GameService, $state, $stateParams, AuthServi
 	$scope.AiPlay = () => {
 		GameService.AiPlay();
 	};
+
 	$scope.showHistory = () => {
+		var game = $stateParams.data;
 		$scope.datas = GameService.getHistory();
 		var historyMain = document.getElementById('historyMain');
 		historyMain.innerHTML = '';
@@ -163,11 +167,26 @@ function gamePlayController($scope, GameService, $state, $stateParams, AuthServi
 		generateHeader(historyMain, 'Akhir');
 
 		for (let index = 0; index < $scope.datas.length; index++) {
+			var current = $scope.datas[index];
+
 			if (index > 1) {
 				generate(historyMain, id++, $scope.datas[index - 1]);
-				generate(historyMain, id++, $scope.datas[index]);
+				generate(historyMain, id++, current);
+
+				if (current.side === 1) {
+					generateHeader(historyMain, game.owner.playerName);
+					generateHeader(historyMain, game.owner.playerName + (current.useAI ? ' (Solusi)' : ''));
+				} else {
+					generateHeader(historyMain, game.opponent.playerName);
+					generateHeader(historyMain, game.opponent.playerName + (current.useAI ? ' (Solusi)' : ''));
+				}
 			} else {
 				generate(historyMain, id++, $scope.datas[index]);
+			}
+
+			if (index == 1) {
+				generateHeader(historyMain, game.owner.playerName);
+				generateHeader(historyMain, game.owner.playerName + (current.useAI ? ' (Solusi)' : ''));
 			}
 		}
 	};
@@ -335,14 +354,17 @@ function profileController($scope, PlayerService, PeraturanService, AuthService)
 		}
 	);
 
-	$scope.getHistory = (id) => {
-		PeraturanService.getHistory(id).then((x) => {
+	$scope.getHistory = (item) => {
+		PeraturanService.getHistory(item.idtantangan).then((x) => {
 			$scope.history = x;
+
+			var pion = $scope.profile.idUser == item.idUser ? 1 : -1;
+
 			var othello = new OthelloView({ pion: 1 });
 			othello.play();
 
 			x.forEach((element) => {
-				var map = othello.goChess(element.akhir);
+				othello.goChess(element.akhir, element.solusi);
 			});
 
 			$scope.histories = othello.getHistory();
@@ -354,11 +376,31 @@ function profileController($scope, PlayerService, PeraturanService, AuthService)
 			generateHeader(historyMain, 'Akhir');
 
 			for (let index = 0; index < $scope.histories.length; index++) {
+				var current = $scope.histories[index];
+
 				if (index > 1) {
 					generate(historyMain, id++, $scope.histories[index - 1]);
-					generate(historyMain, id++, $scope.histories[index]);
+					generate(historyMain, id++, current);
+
+					if (current.side === 1) {
+						generateHeader(historyMain, item.user2);
+						generateHeader(historyMain, item.user2 + (current.useAI ? ' (Solusi)' : ''));
+					} else {
+						generateHeader(historyMain, item.user1);
+						generateHeader(historyMain, item.user1 + (current.useAI ? ' (Solusi)' : ''));
+					}
 				} else {
 					generate(historyMain, id++, $scope.histories[index]);
+				}
+
+				if (index == 1) {
+					if (current.side === 1) {
+						generateHeader(historyMain, item.user2);
+						generateHeader(historyMain, item.user2 + (current.useAI ? ' (Solusi)' : ''));
+					} else {
+						generateHeader(historyMain, item.user1);
+						generateHeader(historyMain, item.user1 + (current.useAI ? ' (Solusi)' : ''));
+					}
 				}
 			}
 		});
@@ -396,7 +438,7 @@ function generate(historyMain, id, m) {
 
 function generateHeader(historyMain, name) {
 	g = document.createElement('div');
-	g.setAttribute('id', name);
+	g.setAttribute('id', 'Awal');
 	historyMain.appendChild(g);
 	var html = name;
 	g.innerHTML = html;
