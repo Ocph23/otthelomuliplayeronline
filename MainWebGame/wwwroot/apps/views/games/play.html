@@ -33,6 +33,7 @@
             <button id="ai" ng-disabled="!mePlay" class="btn btn-warning" ng-click="AiPlay()">Solusi</button>
             <button id="btnHistory" class="btn btn-info" data-toggle="modal" data-target="#history"
                 ng-click="showHistory()">History</button>
+            <button class="btn btn-success" data-toggle="modal" data-target="#algoHistory">Lihat Solusi</button>
             <!--div-- id="explain" class="button">About</!--div-->
         </div>
     </div>
@@ -91,7 +92,35 @@
     </div>
 </div>
 
+
 <style>
+    .algoritmaView {
+        width: 250px;
+        height: 100%;
+        color: black;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .topLabel {
+        margin-left: 10px;
+        margin-top: 20px;
+        font-size: 12px;
+    }
+
+    .bottomLabel {
+        margin-left: 10px;
+        margin-bottom: 20px;
+        font-size: 12px;
+    }
+
+    .middleLabel {
+        margin-left: 10px;
+        font-size: 12px;
+    }
+
+
     #ai:disabled {
         background-color: rgb(190, 188, 188);
     }

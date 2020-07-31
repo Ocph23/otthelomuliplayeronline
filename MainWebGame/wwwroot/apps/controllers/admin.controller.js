@@ -8,10 +8,10 @@ angular
 function adminController($scope, AuthService) {
 	AuthService.profile().then((x) => {
 		if (x.role.toLowerCase() != 'admin') $state.go('login');
-    });
-    $scope.logoff = () => {
-        AuthService.logOff();
-    }
+	});
+	$scope.logoff = () => {
+		AuthService.logOff();
+	};
 }
 
 function peraturanController($scope, PeraturanService, message) {
@@ -35,7 +35,7 @@ function peraturanController($scope, PeraturanService, message) {
 	};
 
 	$scope.delete = (item) => {
-		message.dialog('Yakin Hapus User ?').then((x) => {
+		message.dialog('Yakin Hapus Peraturan ?').then((x) => {
 			PeraturanService.delete(item.idPeraturan).then((x) => {});
 		});
 	};
