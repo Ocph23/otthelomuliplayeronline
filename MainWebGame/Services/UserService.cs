@@ -32,6 +32,7 @@ namespace MainWebGame.Services {
 
         public async Task<User> Authenticate (string username, string password) {
             try {
+                await Task.Delay (1);
 
                 if (db.Admins.Select ().Count () <= 0) {
                     var admin = new UserRegister { username = "Admin", Password = "Admin", Role = Role.Admin };

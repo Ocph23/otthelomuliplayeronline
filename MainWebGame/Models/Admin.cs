@@ -3,7 +3,7 @@ using Newtonsoft.Json.Converters;
 using Ocph.DAL;
 
 namespace MainWebGame.Models {
-  [TableName ("Users")]
+  [TableName ("Admin")]
   public class Admin {
     [PrimaryKey ("idusers")]
     [DbColumn ("idusers")]
