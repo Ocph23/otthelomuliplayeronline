@@ -22,6 +22,7 @@ namespace MainWebGame {
         }
 
         public IRepository<User> Users { get { return new Repository<User> (this); } }
+        public IRepository<Admin> Admins { get { return new Repository<Admin> (this); } }
         public IRepository<Tantangan> Tantangan { get { return new Repository<Tantangan> (this); } }
         public IRepository<BantuanSolusi> BantuanSolusi { get { return new Repository<BantuanSolusi> (this); } }
         public IRepository<HasilBermain> Scores { get { return new Repository<HasilBermain> (this); } }

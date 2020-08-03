@@ -33,15 +33,23 @@ namespace MainWebGame.Services {
         public async Task<User> Authenticate (string username, string password) {
             try {
 
-                if (db.Users.Select ().Count () <= 0) {
-                    await Register (new UserRegister { username = "Admin", Password = "Admin", Role = Role.Admin });
+                if (db.Admins.Select ().Count () <= 0) {
+                    var admin = new UserRegister { username = "Admin", Password = "Admin", Role = Role.Admin };
+                    admin.CreateAdmin (db);
                     throw new SystemException ("Anda Tidak Memiliki Akses");
                 }
 
                 var user = db.Users.Where (x => x.UserName == username).FirstOrDefault ();
                 if (user == null) {
-                    throw new SystemException ("Anda Tidak Memiliki Akses");
+                    var admin = db.Admins.Where (x => x.UserName == username).FirstOrDefault ();
+                    if (admin != null) {
+                        user = new User { PlayerName = "Admin", UserName = admin.UserName, Role = Role.Admin, Password = admin.Password };
+                    } else
+                        throw new SystemException ("Anda Tidak Memiliki Akses");
+                } else {
+                    user.Role = Role.Player;
                 }
+
                 if (!Helper.VerifyMd5Hash (password, user.Password))
                     throw new SystemException ("Anda Tidak Memiliki Akses");
 
@@ -92,6 +100,16 @@ namespace MainWebGame.Services {
             try {
                 user.IdUser = db.Users.InsertAndGetLastID (user);
                 return user;
+            } catch (System.Exception ex) {
+
+                throw new SystemException (ex.Message);
+            }
+        }
+
+        public static User CreateAdmin (this UserRegister user, OcphDbContext db) {
+            try {
+                var id = db.Admins.InsertAndGetLastID (new Admin { UserName = user.username, Password = Helper.GetMd5Hash (user.Password) });
+                return new User { UserName = user.username, Password = user.Password, IdUser = id, Role = Role.Admin };
             } catch (System.Exception ex) {
 
                 throw new SystemException (ex.Message);
