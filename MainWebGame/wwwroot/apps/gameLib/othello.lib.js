@@ -329,7 +329,7 @@ function OthelloOnline(signalConnection, mePlayEvent) {
 		var n = 0;
 		if (map.nextNum == 1) {
 			n = map.nextIndex[0];
-		} else if (map.space <= 58) {
+		} else if (map.space <= 60) {
 			n = othello.ai.startSearch(map);
 		} else {
 			n = map.nextIndex[(Math.random() * map.nextIndex.length) >> 0];
